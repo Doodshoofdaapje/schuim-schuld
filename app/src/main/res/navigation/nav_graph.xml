@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentHomePageBinding2">
+    <fragment
+        android:id="@+id/fragmentHomePageBinding2"
+        android:name="com.boris.bier.FragmentHomePageBinding"
+        android:label="Home "
+        tools:layout="@layout/fragment_home_page">
+        <action
+            android:id="@+id/action_fragmentHomePageBinding2_to_accountDetailFragmentNew"
+            app:destination="@id/accountDetailFragmentNew" />
+        <action
+            android:id="@+id/action_fragmentHomePageBinding2_to_fragmentLogIn"
+            app:destination="@id/fragmentLogIn" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentAdminOverview2"
+        android:name="com.boris.bier.admin.FragmentAdminPanel"
+        android:label="Admin Panel"
+        tools:layout="@layout/fragment_admin_panel">
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentNewAccount"
+            app:destination="@id/fragmentNewAccount" />
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentDeleteAccount"
+            app:destination="@id/fragmentDeleteAccount" />
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentEditAccount"
+            app:destination="@id/fragmentEditAccount" />
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentChangePassword"
+            app:destination="@id/fragmentChangePassword" />
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentLogIn"
+            app:destination="@id/fragmentHomePageBinding2"
+            app:popUpTo="@id/fragmentAdminOverview2"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentNewAccount"
+        android:name="com.boris.bier.admin.FragmentNewAccount"
+        android:label="Nieuw Account"
+        tools:layout="@layout/fragment_account_new"/>
+    <fragment
+        android:id="@+id/fragmentEditAccount"
+        android:name="com.boris.bier.admin.FragmentEditOverview"
+        android:label="Account Bewerken">
+        <action
+            android:id="@+id/action_fragmentEditAccount_to_accountEditFragment"
+            app:destination="@id/accountEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentDeleteAccount"
+        android:name="com.boris.bier.admin.FragmentDeleteOverview"
+        android:label="Account Verwijderen"/>
+    <fragment
+        android:id="@+id/accountEditFragment"
+        android:name="com.boris.bier.admin.AccountEditFragment"
+        android:label="Detail Weergave"/>
+    <fragment
+        android:id="@+id/accountDetailFragmentNew"
+        android:name="com.boris.bier.accountoverview.AccountDetailFragment"
+        android:label="Details" />
+    <fragment
+        android:id="@+id/fragmentLogIn"
+        android:name="com.boris.bier.admin.FragmentLogIn"
+        android:label="Log In">
+        <action
+            android:id="@+id/action_fragmentLogIn_to_fragmentAdminOverview2"
+            app:destination="@id/fragmentAdminOverview2"
+            app:popUpTo="@id/fragmentHomePageBinding2"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentChangePassword"
+        android:name="com.boris.bier.admin.FragmentChangePassword"
+        android:label="FragmentChangePassword" />
+</navigation>

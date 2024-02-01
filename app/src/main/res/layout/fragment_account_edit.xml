@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey">
+
+    <Button
+        android:id="@+id/button_cancel_edit"
+        android:layout_width="600dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="64dp"
+        android:backgroundTint="@color/soft_red"
+        android:text="Annuleer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_change_edit"
+        android:layout_width="600dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/soft_green"
+        android:text="Verander"
+        app:layout_constraintBottom_toTopOf="@+id/button_cancel_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Account Bewerken"
+        android:textColor="@color/soft_green"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/account_detail_bg_test"
+        android:padding="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <Spinner
+            android:id="@+id/spinnerGroupEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/soft_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputBalanceEdit" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputBalanceEdit"
+            android:layout_width="400dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:background="@color/mid_grey"
+            android:fontFamily="sans-serif-medium"
+            android:hint="Type hier"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputNameEdit" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputNameEdit"
+            android:layout_width="400dp"
+            android:layout_height="40dp"
+            android:background="@color/mid_grey"
+            android:fontFamily="sans-serif-medium"
+            android:hint="Type hier"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

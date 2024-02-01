@@ -1,0 +1,14 @@
+{
+  "password":  {
+    "password": "admin"
+  },
+  "accounts": {
+    "accounts": [
+      {
+      "name": "dummy",
+      "balance": 0.0,
+      "group": "Overig"
+      }
+    ]
+  }
+}
