@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -28,7 +26,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.IntStream;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FragmentHomepage extends BaseAccountOverviewFragment implements IOnBackPressed {
 
@@ -38,7 +37,13 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private MainActivity mainActivity;
     private TableLayout layout;
 
-    private Boolean[] selectionBitmap;
+    private Boolean[] selectionStates;
+    private ArrayList<Account> filteredAccounts;
+
+    private final String sortInitialValue = "Sorteer";
+    private final String sortAscendingValue = "A-Z";
+    private final String sortDescendingValue = "Z-A";
+    private final String filterInitialValue = "Filter";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,10 +51,11 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
         this.mainActivity = (MainActivity) getActivity();
         this.register = mainActivity.accountRegister;
+        this.filteredAccounts = register.getAccounts();
         this.layout = binding.layoutAccountsHome;
 
-        this.selectionBitmap = new Boolean[register.size()];
-        Arrays.fill(selectionBitmap, Boolean.FALSE);
+        this.selectionStates = new Boolean[register.size()];
+        Arrays.fill(selectionStates, Boolean.FALSE);
 
         return binding.getRoot();
     }
@@ -58,23 +64,34 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         super.onViewCreated(view, savedInstanceState);
 
         // Fill group selector
-        ArrayList<String> spinnerItems = new ArrayList<>(Arrays.asList("Iedereen"));
-        for (AgeGroup group : AgeGroup.values()) {
-            spinnerItems.add(group.toString());
-        }
-        DynamicSpinnerFiller.fill(binding.spinnerGroupHome, getActivity(), spinnerItems);
+        DynamicSpinnerFiller.age(binding.spinnerGroupHome, getActivity(), new ArrayList<>(Arrays.asList(filterInitialValue)));
+
+        // Fill sorting selector
+        DynamicSpinnerFiller.fill(binding.spinnerSortingHome, getActivity(), new ArrayList<>(
+                Arrays.asList(sortInitialValue, sortAscendingValue, sortDescendingValue)));
 
         // Fill account overview
-        ArrayList<AccountCard> cards = createCards(register.getAccounts());
-        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
+        loadLayout();
 
         // Event Listeners
-        binding.payButton.setOnClickListener(view1 -> createAlert(mainActivity, view1));
+        binding.payButton.setOnClickListener(view1 -> createConfirmationAlert(mainActivity, view1));
 
         binding.spinnerGroupHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                filterLayout(layout);
+                loadLayout();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+        binding.spinnerSortingHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                loadLayout();
             }
 
             @Override
@@ -85,92 +102,42 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
     public boolean onBackPressed() {
         return exitSelectionMode();
     }
 
-    private boolean exitSelectionMode() {
-        if (selectionMode) {
-            selectionMode = false;
-            getView().findViewById(R.id.selectionToolBar).setVisibility(View.INVISIBLE);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void filterLayout(TableLayout layout) {
-        String selectedGroupAsString = (String) binding.spinnerGroupHome.getSelectedItem();
-        ArrayList<Account> filterdAccounts = new ArrayList<>();
-
-        if (selectedGroupAsString.equals("Iedereen")) {
-            filterdAccounts = register.getAccounts();
-        }
-        else {
-            AgeGroup selectedGroup = AgeGroup.valueOf(selectedGroupAsString);
-            for (Account account : register.getAccounts()) {
-                if (account.getGroup() == selectedGroup) {
-                    filterdAccounts.add(account);
-                }
-            }
-        }
-
-        ArrayList<AccountCard> cards = createCards(filterdAccounts);
-        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
-    }
-
-    @Override
-    protected void configureCard(AccountCard accountCard) {
-        accountCard.setOnLongClickListener(view -> {
-            selectionMode = true;
-            selectAccount(accountCard);
-
-            getView().findViewById(R.id.selectionToolBar).setVisibility(View.VISIBLE);
-            return true;
-        });
-
-        accountCard.setOnClickListener(view -> {
-            if (selectionMode) {
-                selectAccount(accountCard);
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("ACCOUNT_DETAILS", accountCard.getAccount());
-                NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_fragmentHomePageBinding2_to_accountDetailFragmentNew, bundle);
-            }
-        });
-    }
+    /* Event handlers */
 
     private void selectAccount(AccountCard accountCard) {
         // Select Account
         accountCard.setSelected(!accountCard.isSelected());
-        selectionBitmap[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionBitmap[register.getAccounts().indexOf(accountCard.getAccount())];
+        selectionStates[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionStates[register.getAccounts().indexOf(accountCard.getAccount())];
 
         // Update selection count
-        long count = Arrays.stream(selectionBitmap).mapToInt(b -> b ? 1 : 0).sum();
+        long count = Arrays.stream(selectionStates).mapToInt(b -> b ? 1 : 0).sum();
         binding.selectionCountView.setText(String.valueOf(count));
     }
 
     private void chargeSelectedAccounts(MainActivity activity) {
         ArrayList<Account> accounts = register.getAccounts();
-        for (int i=0; i<selectionBitmap.length; i++) {
-            if(selectionBitmap[i]) {
+        for (int i = 0; i< selectionStates.length; i++) {
+            if(selectionStates[i]) {
                 accounts.get(i).pay();
-                activity.accountRegister.save();
+                register.save();
             }
         }
 
-        // Reload overview
-        ArrayList<AccountCard> cards = createCards(register.getAccounts());
-        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
-
-        // Reset selection
-        Arrays.fill(selectionBitmap, Boolean.FALSE);
-
+        resetFragment();
         exitSelectionMode();
     }
 
-    private void createAlert(MainActivity activity, View view) {
+    private void createConfirmationAlert(MainActivity activity, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setTitle("Bevestig");
@@ -195,9 +162,80 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         alert.show();
     }
 
+    /* Helper Functions */
+
+    private boolean exitSelectionMode() {
+        if (selectionMode) {
+            selectionMode = false;
+            getView().findViewById(R.id.selectionToolBar).setVisibility(View.INVISIBLE);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void loadLayout() {
+        filterAccounts();
+        sortAccounts();
+        ArrayList<AccountCard> cards = createCards(filteredAccounts);
+        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
+    }
+
+    private void resetFragment() {
+        // Reload overview
+        loadLayout();
+
+        // Reset selection
+        Arrays.fill(selectionStates, Boolean.FALSE);
+    }
+
+    private void filterAccounts() {
+        String selectedGroupAsString = (String) binding.spinnerGroupHome.getSelectedItem();
+        filteredAccounts = new ArrayList<>();
+
+        if (selectedGroupAsString.equals(filterInitialValue)) {
+            filteredAccounts = register.getAccounts();
+        }
+        else {
+            AgeGroup selectedGroup = AgeGroup.valueOf(selectedGroupAsString);
+            for (Account account : register.getAccounts()) {
+                if (account.getGroup() == selectedGroup) {
+                    filteredAccounts.add(account);
+                }
+            }
+        }
+    }
+
+    private void sortAccounts() {
+        String selectedSortAsString = (String) binding.spinnerSortingHome.getSelectedItem();
+        if (selectedSortAsString.equals(sortInitialValue)) {
+            filterAccounts();
+        } else if (selectedSortAsString.equals(sortAscendingValue)) {
+            Collections.sort(filteredAccounts, Comparator.comparing(Account::getName));
+        } else if (selectedSortAsString.equals(sortDescendingValue)) {
+            Collections.sort(filteredAccounts, Comparator.comparing(Account::getName).reversed());
+        }
+    }
+
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    protected void configureCard(AccountCard accountCard) {
+        accountCard.setOnLongClickListener(view -> {
+            selectionMode = true;
+            selectAccount(accountCard);
+
+            getView().findViewById(R.id.selectionToolBar).setVisibility(View.VISIBLE);
+            return true;
+        });
+
+        accountCard.setOnClickListener(view -> {
+            if (selectionMode) {
+                selectAccount(accountCard);
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("ACCOUNT_DETAILS", accountCard.getAccount());
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_fragmentHomePageBinding2_to_accountDetailFragmentNew, bundle);
+            }
+        });
     }
 }

@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountEditFragment extends Fragment {
 
@@ -36,7 +37,7 @@ public class AccountEditFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         MainActivity mainActivity = (MainActivity) getActivity();
 
-        ArrayList<String> groupList = DynamicSpinnerFiller.fill(binding.spinnerGroupEdit, getActivity());
+        List<String> groupList = DynamicSpinnerFiller.age(binding.spinnerGroupEdit, getActivity());
         Bundle bundle = this.getArguments();
         Account account = (Account) bundle.getSerializable("ACCOUNT_DETAILS");
 

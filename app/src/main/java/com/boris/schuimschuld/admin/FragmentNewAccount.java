@@ -36,21 +36,11 @@ public class FragmentNewAccount extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) getActivity();
 
-        DynamicSpinnerFiller.fill(binding.spinnerGroupAdd, getActivity());
+        DynamicSpinnerFiller.age(binding.spinnerGroupAdd, getActivity());
 
-        binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addActionPerformed(view);
-            }
-        });
+        binding.buttonAdd.setOnClickListener(view1 -> addActionPerformed(view1));
 
-        binding.buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack();
-            }
-        });
+        binding.buttonCancel.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack());
     }
 
     private void addActionPerformed(View view) {
