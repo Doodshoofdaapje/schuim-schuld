@@ -2,12 +2,14 @@ package com.boris.schuimschuld;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -20,12 +22,13 @@ import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.util.DynamicLayoutFillers;
-import com.boris.schuimschuld.util.ageGroupSpinner;
+import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class FragmentHomepage extends BaseAccountOverviewFragment implements IOnBackPressed {
 
@@ -33,6 +36,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private boolean selectionMode = false;
     private AccountRegister register;
     private MainActivity mainActivity;
+    private TableLayout layout;
+
+    private Boolean[] selectionBitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +46,10 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
         this.mainActivity = (MainActivity) getActivity();
         this.register = mainActivity.accountRegister;
+        this.layout = binding.layoutAccountsHome;
+
+        this.selectionBitmap = new Boolean[register.size()];
+        Arrays.fill(selectionBitmap, Boolean.FALSE);
 
         return binding.getRoot();
     }
@@ -47,16 +57,19 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TableLayout layout = (TableLayout) view.findViewById(R.id.layoutAccountsHome);
-        ageGroupSpinner.fillSpinner(binding.spinnerGroupHome, getActivity(), new ArrayList<>(Arrays.asList("Iedereen")));
+        // Fill group selector
+        ArrayList<String> spinnerItems = new ArrayList<>(Arrays.asList("Iedereen"));
+        for (AgeGroup group : AgeGroup.values()) {
+            spinnerItems.add(group.toString());
+        }
+        DynamicSpinnerFiller.fill(binding.spinnerGroupHome, getActivity(), spinnerItems);
 
+        // Fill account overview
         ArrayList<AccountCard> cards = createCards(register.getAccounts());
         DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
 
+        // Event Listeners
         binding.payButton.setOnClickListener(view1 -> createAlert(mainActivity, view1));
-
-        binding.buttonLogin.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentHomepage.this)
-                .navigate(R.id.action_fragmentHomePageBinding2_to_fragmentLogIn));
 
         binding.spinnerGroupHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -109,15 +122,16 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     @Override
     protected void configureCard(AccountCard accountCard) {
         accountCard.setOnLongClickListener(view -> {
-            accountCard.setSelected(!accountCard.isSelected());
             selectionMode = true;
+            selectAccount(accountCard);
+
             getView().findViewById(R.id.selectionToolBar).setVisibility(View.VISIBLE);
             return true;
         });
 
         accountCard.setOnClickListener(view -> {
             if (selectionMode) {
-                accountCard.setSelected(!accountCard.isSelected());
+                selectAccount(accountCard);
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("ACCOUNT_DETAILS", accountCard.getAccount());
@@ -127,21 +141,32 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         });
     }
 
+    private void selectAccount(AccountCard accountCard) {
+        // Select Account
+        accountCard.setSelected(!accountCard.isSelected());
+        selectionBitmap[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionBitmap[register.getAccounts().indexOf(accountCard.getAccount())];
+
+        // Update selection count
+        long count = Arrays.stream(selectionBitmap).mapToInt(b -> b ? 1 : 0).sum();
+        binding.selectionCountView.setText(String.valueOf(count));
+    }
+
     private void chargeSelectedAccounts(MainActivity activity) {
-        TableLayout layout = (TableLayout) activity.findViewById(R.id.layoutAccountsHome);
-        for (int i = 0; i < layout.getChildCount(); i++) {
-            TableRow tableRow = (TableRow) layout.getChildAt(i);
-            for (int j = 0; j < tableRow.getChildCount(); j++) {
-                if (tableRow.getChildAt(j) instanceof AccountCard) {
-                    AccountCard accountCard = (AccountCard) tableRow.getChildAt(j);
-                    if (accountCard.isSelected()) {
-                        accountCard.getAccount().pay();
-                        activity.accountRegister.save();
-                        accountCard.setSelected(false);
-                    }
-                }
+        ArrayList<Account> accounts = register.getAccounts();
+        for (int i=0; i<selectionBitmap.length; i++) {
+            if(selectionBitmap[i]) {
+                accounts.get(i).pay();
+                activity.accountRegister.save();
             }
         }
+
+        // Reload overview
+        ArrayList<AccountCard> cards = createCards(register.getAccounts());
+        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
+
+        // Reset selection
+        Arrays.fill(selectionBitmap, Boolean.FALSE);
+
         exitSelectionMode();
     }
 

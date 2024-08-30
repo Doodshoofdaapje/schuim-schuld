@@ -28,14 +28,15 @@
         <item name="actionMenuTextColor">@color/soft_green</item>
     </style>
 
-    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
-        <item name="android:textColor">@color/soft_green</item>
+    <style name="SpinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:textColor">@color/white</item>
         <item name="android:colorPrimary">@color/soft_green</item>
-        <item name="android:textSize">24dp</item>
+        <item name="android:background">@drawable/account_detail_bg</item>
+        <item name="android:textSize">20dp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+    <style name="SpinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
         <item name="android:textColor">@color/soft_green</item>
         <item name="android:background">@color/mid_grey</item>
         <item name="android:fontFamily">sans-serif-medium</item>

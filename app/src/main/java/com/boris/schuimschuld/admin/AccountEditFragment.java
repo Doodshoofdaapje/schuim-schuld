@@ -11,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.boris.schuimschuld.MainActivity;
-import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.AgeGroup;
-import com.boris.schuimschuld.util.ageGroupSpinner;
+import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -37,7 +36,7 @@ public class AccountEditFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         MainActivity mainActivity = (MainActivity) getActivity();
 
-        ArrayList<String> groupList = ageGroupSpinner.fillSpinner(binding.spinnerGroupEdit, getActivity());
+        ArrayList<String> groupList = DynamicSpinnerFiller.fill(binding.spinnerGroupEdit, getActivity());
         Bundle bundle = this.getArguments();
         Account account = (Account) bundle.getSerializable("ACCOUNT_DETAILS");
 

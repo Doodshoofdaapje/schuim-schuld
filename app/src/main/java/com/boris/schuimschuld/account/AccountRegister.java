@@ -38,6 +38,10 @@ public class AccountRegister {
         }
     }
 
+    public Integer size() {
+        return register.size();
+    }
+
     public boolean has(Account account) {
         return register.contains(account);
     }

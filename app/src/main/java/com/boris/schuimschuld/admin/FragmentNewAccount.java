@@ -11,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.boris.schuimschuld.MainActivity;
-import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.AgeGroup;
-import com.boris.schuimschuld.util.ageGroupSpinner;
+import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -37,7 +36,7 @@ public class FragmentNewAccount extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) getActivity();
 
-        ageGroupSpinner.fillSpinner(binding.spinnerGroupAdd, getActivity());
+        DynamicSpinnerFiller.fill(binding.spinnerGroupAdd, getActivity());
 
         binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
