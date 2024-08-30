@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.boris.bier'
+    namespace 'com.boris.schuimschuld'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.boris.bier"
+        applicationId "com.boris.schuimschuld"
         minSdk 21
         targetSdk 32
         versionCode 1
