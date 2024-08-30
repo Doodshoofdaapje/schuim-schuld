@@ -5,10 +5,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.boris.schuimschuld.R;
-import com.boris.schuimschuld.account.AgeGroup;
+import com.boris.schuimschuld.account.Group;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DynamicSpinnerFiller {
@@ -27,7 +26,7 @@ public class DynamicSpinnerFiller {
 
     public static List<String> age(Spinner spinner, Activity activity, List<String> items) {
         // Fill group selector
-        for (AgeGroup group : AgeGroup.values()) {
+        for (Group group : Group.values()) {
             items.add(group.toString());
         }
         return fill(spinner, activity, items);

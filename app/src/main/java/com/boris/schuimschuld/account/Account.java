@@ -8,22 +8,24 @@ import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.util.ImageWriterReader;
 import com.boris.schuimschuld.util.SerialBitmap;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class Account implements Serializable {
     private String name;
     private Double balance;
-    private AgeGroup group;
+    private ArrayList<Group> groups;
     private SerialBitmap profilePicture;
 
-    public Account(String name, Double balance, AgeGroup group, Context context) {
+    public Account(String name, Double balance, ArrayList<Group> groups, Context context) {
         this.name = name;
         this.balance = balance;
-        this.group = group;
+        this.groups = groups;
         this.profilePicture = loadScaledProfilePicture(context);
     }
 
@@ -35,12 +37,12 @@ public class Account implements Serializable {
         this.balance = newBalance;
     }
 
-    public void setGroup(AgeGroup newGroup) {
-        this.group = newGroup;
+    public void setGroups(ArrayList<Group> newGroups) {
+        this.groups = newGroups;
     }
 
     public void setPicture(Context context, Bitmap picture) {
-        profilePicture = scalePicture(context, picture);
+        profilePicture = scalePicture(picture);
         saveImage(context, picture);
     }
 
@@ -70,15 +72,15 @@ public class Account implements Serializable {
 
     public SerialBitmap loadScaledProfilePicture(Context context) {
         Bitmap profilePicture = loadProfilePicture(context).getBitmap();
-        return scalePicture(context, profilePicture);
+        return scalePicture(profilePicture);
     }
 
-    private SerialBitmap scalePicture(Context context, Bitmap bitmap) {
+    private SerialBitmap scalePicture(Bitmap bitmap) {
         return new SerialBitmap(Bitmap.createScaledBitmap(bitmap, 80, 80, true));
     }
 
-    public AgeGroup getGroup() {
-        return this.group;
+    public ArrayList<Group> getGroups() {
+        return this.groups;
     }
 
     public String getName() {
@@ -98,7 +100,12 @@ public class Account implements Serializable {
 
         accountDetails.put("name", name);
         accountDetails.put("balance", balance);
-        accountDetails.put("group", group.toString());
+
+        JSONArray groupsArray = new JSONArray();
+        for (Group group : groups) {
+            groupsArray.add(group.toString());
+        }
+        accountDetails.put("groups", groupsArray);
 
         return accountDetails;
     }

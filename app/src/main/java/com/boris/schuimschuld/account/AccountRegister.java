@@ -76,8 +76,14 @@ public class AccountRegister {
             JSONObject accountAsJson = (JSONObject) account;
             String name = (String) accountAsJson.get("name");
             Double balance = (Double) accountAsJson.get("balance");
-            AgeGroup group = AgeGroup.valueOf((String) accountAsJson.get("group"));
-            register.add(new Account(name, balance, group, context));
+
+            ArrayList<Group> groups = new ArrayList<>();
+            JSONArray groupsAsJson = (JSONArray) accountAsJson.get("groups");
+            for (Object group : groupsAsJson) {
+                groups.add(Group.valueOf((String) group));
+            }
+
+            register.add(new Account(name, balance, groups, context));
         }
 
     }

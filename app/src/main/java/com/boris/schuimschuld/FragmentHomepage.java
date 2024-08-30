@@ -2,7 +2,6 @@ package com.boris.schuimschuld;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.AccountRegister;
-import com.boris.schuimschuld.account.AgeGroup;
+import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
@@ -197,9 +196,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
             filteredAccounts = register.getAccounts();
         }
         else {
-            AgeGroup selectedGroup = AgeGroup.valueOf(selectedGroupAsString);
+            Group selectedGroup = Group.valueOf(selectedGroupAsString);
             for (Account account : register.getAccounts()) {
-                if (account.getGroup() == selectedGroup) {
+                if (account.getGroups().contains(selectedGroup)) {
                     filteredAccounts.add(account);
                 }
             }

@@ -22,6 +22,7 @@ import android.widget.ImageView;
 
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
+import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.util.PictureUtil;
 
 public class AccountDetailFragment extends Fragment {
@@ -48,7 +49,12 @@ public class AccountDetailFragment extends Fragment {
 
         binding.textOutputNameDetail.setText(account.getName());
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
-        binding.textOutputGroupDetail.setText(account.getGroup().toString());
+
+        String groupString = "";
+        for (Group group : account.getGroups()) {
+            groupString += group.toString() + " ";
+        }
+        binding.textOutputGroupDetail.setText(groupString);
 
         /*binding.buttonReturnDetail*/
         binding.buttonReturnDetail2.setOnClickListener(new View.OnClickListener() {

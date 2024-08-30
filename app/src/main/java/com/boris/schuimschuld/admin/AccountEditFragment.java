@@ -12,12 +12,13 @@ import android.view.ViewGroup;
 
 import com.boris.schuimschuld.MainActivity;
 import com.boris.schuimschuld.account.Account;
-import com.boris.schuimschuld.account.AgeGroup;
+import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountEditFragment extends Fragment {
@@ -43,7 +44,7 @@ public class AccountEditFragment extends Fragment {
 
         binding.textInputNameEdit.setText(account.getName());
         binding.textInputBalanceEdit.setText(account.getBalance().toString());
-        binding.spinnerGroupEdit.setSelection(groupList.indexOf(account.getGroup().toString()));
+        binding.spinnerGroupEdit.setSelection(groupList.indexOf(account.getGroups().get(0).toString()));
 
         binding.buttonChangeEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,12 +65,12 @@ public class AccountEditFragment extends Fragment {
         try {
             String name = binding.textInputNameEdit.getText().toString();
             Double newBalance =  Double.parseDouble(binding.textInputBalanceEdit.getText().toString());
-            AgeGroup group = AgeGroup.valueOf((String) binding.spinnerGroupEdit.getSelectedItem());
+            Group group = Group.valueOf((String) binding.spinnerGroupEdit.getSelectedItem());
 
             if (!name.isEmpty()) {
                 account.setName(name);
                 account.setBalance(newBalance);
-                account.setGroup(group);
+                account.setGroups(new ArrayList<>(Arrays.asList(group)));
                 ((MainActivity) getActivity()).accountRegister.save();
                 NavHostFragment.findNavController(AccountEditFragment.this).popBackStack();
             } else {

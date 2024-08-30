@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 
 import com.boris.schuimschuld.MainActivity;
 import com.boris.schuimschuld.account.Account;
-import com.boris.schuimschuld.account.AgeGroup;
+import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FragmentNewAccount extends Fragment {
 
@@ -55,7 +58,7 @@ public class FragmentNewAccount extends Fragment {
                 return;
             }
 
-            Account newAccount = new Account(name, newBalance, AgeGroup.valueOf(group), getContext());
+            Account newAccount = new Account(name, newBalance, new ArrayList<>(Arrays.asList(Group.valueOf(group))), getContext());
             mainActivity.accountRegister.register(newAccount);
             NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack();
         } catch (NumberFormatException exception) {
