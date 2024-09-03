@@ -21,7 +21,7 @@
         android:layout_width="700dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
-        android:background="@drawable/account_detail_bg"
+        android:background="@drawable/bg_account_detail"
         android:elevation="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

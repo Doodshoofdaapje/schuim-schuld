@@ -23,33 +23,33 @@
             android:id="@+id/button_cancel"
             android:layout_width="600dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/soft_red"
             android:text="Annuleer"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_add" />
 
         <Button
             android:id="@+id/button_add"
             android:layout_width="600dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="24dp"
             android:backgroundTint="@color/soft_green"
             android:text="Voeg Toe"
-            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
             android:text="Account Toevoegen"
             android:textColor="@color/soft_green"
-            android:textSize="60sp"
+            android:textSize="40sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             android:layout_width="600dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:background="@drawable/account_detail_bg_test"
+            android:background="@drawable/bg_account_detail_test"
             android:padding="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,11 +85,27 @@
                 android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="32dp"
-                android:overlapAnchor="false"
                 android:backgroundTint="@color/soft_green"
+                android:overlapAnchor="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputBalanceAdd" />
+                app:layout_constraintTop_toBottomOf="@+id/flexTagsAdd" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexTagsAdd"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="64dp"
+                app:flexDirection="row"
+                app:flexWrap="wrap"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputBalanceAdd">
+
+
+            </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputBalanceAdd"

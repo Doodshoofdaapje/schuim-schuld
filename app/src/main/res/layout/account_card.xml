@@ -5,7 +5,7 @@
     android:id="@+id/containerAccountCard"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/account_card_bg"
+    android:background="@drawable/bg_account_card"
     android:clipToPadding="false"
     android:elevation="10dp"
     android:maxWidth="220dp"

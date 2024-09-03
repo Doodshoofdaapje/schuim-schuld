@@ -23,5 +23,7 @@
     <color name="mid_grey">#373737</color>
     <color name="light_grey">#464646</color>
     <color name="smokey_black">#1B1A1A</color>
+    <color name="dark_white">#e8e8e8</color>
+    <color name="light_soft_green">#b4fa61</color>
 
 </resources>
