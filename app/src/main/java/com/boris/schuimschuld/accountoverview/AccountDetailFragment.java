@@ -27,8 +27,8 @@ import com.boris.schuimschuld.util.PictureUtil;
 
 public class AccountDetailFragment extends Fragment {
 
-    //private com.boris.bier.databinding.FragmentAccountDetailBinding binding;
     private com.boris.schuimschuld.databinding.AccountDetailViewTestBinding binding;
+    private final String bundleKey = "ACCOUNT_DETAILS";
     private Account account;
 
     @Override
@@ -45,8 +45,9 @@ public class AccountDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        account = (Account) bundle.getSerializable("ACCOUNT_DETAILS");
+        account = (Account) bundle.getSerializable(bundleKey);
 
+        // Populate UI
         binding.textOutputNameDetail.setText(account.getName());
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
 
@@ -56,17 +57,17 @@ public class AccountDetailFragment extends Fragment {
         }
         binding.textOutputGroupDetail.setText(groupString);
 
-        /*binding.buttonReturnDetail*/
+        ImageView profilePictureView = (ImageView) view.findViewById(R.id.imageOutputAccountDetail);
+        profilePictureView.setImageBitmap(account.loadProfilePicture(getContext()).getBitmap());
+        PictureUtil.roundPicture(profilePictureView);
+
+        // Event Handlers
         binding.buttonReturnDetail2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(AccountDetailFragment.this).popBackStack();
             }
         });
-
-        ImageView profilePictureView = (ImageView) view.findViewById(R.id.imageOutputAccountDetail);
-        profilePictureView.setImageBitmap(account.loadProfilePicture(getContext()).getBitmap());
-        PictureUtil.roundPicture(binding.imageOutputAccountDetail);
 
         profilePictureView.setOnClickListener(new View.OnClickListener() {
             @Override

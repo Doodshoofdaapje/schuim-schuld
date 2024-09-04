@@ -31,8 +31,8 @@ public class FragmentEditAccount extends Fragment {
     private com.boris.schuimschuld.databinding.FragmentAccountEditBinding binding;
     private FlexboxLayout flexboxLayout;
 
-    // Account attribue
     private ArrayList<Group> selectedGroups;
+    private final String bundleKey = "ACCOUNT_DETAILS";
 
     @Override
     public View onCreateView(
@@ -49,7 +49,7 @@ public class FragmentEditAccount extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
-        Account account = (Account) bundle.getSerializable("ACCOUNT_DETAILS");
+        Account account = (Account) bundle.getSerializable(bundleKey);
         selectedGroups = account.getGroups();
 
         // Populate UI

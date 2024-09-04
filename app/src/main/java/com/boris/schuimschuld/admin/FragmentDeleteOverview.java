@@ -25,21 +25,20 @@ public class FragmentDeleteOverview extends BaseAccountOverviewFragment {
     private MainActivity activity;
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = com.boris.schuimschuld.databinding.FragmentDeleteOverviewBinding.inflate(inflater, container, false);
+        activity = (MainActivity) getActivity();
+
         return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.activity = (MainActivity) getActivity();
-
-        binding.buttonCancelRemove.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentDeleteOverview.this).popBackStack());
-
+        
         ArrayList<AccountCard> cards = createCards(activity.accountRegister.getAccounts());
         DynamicLayoutFillers.Table(getContext(), getView().findViewById(R.id.layoutAccountsDelete), cards, 4);
+
+        binding.buttonCancelRemove.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentDeleteOverview.this).popBackStack());
     }
 
     @Override
@@ -50,15 +49,14 @@ public class FragmentDeleteOverview extends BaseAccountOverviewFragment {
 
     @Override
     protected void configureCard(AccountCard accountCard) {
-        accountCard.setOnClickListener(view -> createAlert(accountCard.getAccount()));
+        accountCard.setOnClickListener(view -> createDeletionAlert(accountCard.getAccount()));
     }
 
-    private void createAlert(Account account) {
+    private void createDeletionAlert(Account account) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setTitle("Bevestig");
         builder.setMessage("Weet je zeker dat je door wilt gaan?");
-        MainActivity activity = this.activity;
 
         builder.setPositiveButton("Ja", (dialog, which) -> {
             activity.accountRegister.deregister(account);

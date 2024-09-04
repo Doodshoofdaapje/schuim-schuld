@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class FragmentEditOverview extends BaseAccountOverviewFragment {
 
     private com.boris.schuimschuld.databinding.FragmentEditOverviewBinding binding;
+    private final String bundleKey = "ACCOUNT_DETAILS";
 
     @Override
     public View onCreateView(
@@ -66,7 +67,7 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
 
         accountCard.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("ACCOUNT_DETAILS", accountCard.getAccount());
+            bundle.putSerializable(bundleKey, accountCard.getAccount());
             NavHostFragment.findNavController(this)
                     .navigate(R.id.action_fragmentEditAccount_to_accountEditFragment, bundle);
         });
