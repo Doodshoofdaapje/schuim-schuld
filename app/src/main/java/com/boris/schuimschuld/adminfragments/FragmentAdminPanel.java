@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.admin;
+package com.boris.schuimschuld.adminfragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

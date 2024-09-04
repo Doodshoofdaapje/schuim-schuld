@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.admin;
+package com.boris.schuimschuld.adminfragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.databinding.FragmentChangePasswordBinding;
 import com.boris.schuimschuld.util.JsonWriterReader;
 import com.google.android.material.snackbar.BaseTransientBottomBar;

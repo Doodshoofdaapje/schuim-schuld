@@ -3,9 +3,9 @@ package com.boris.schuimschuld.account;
 import android.content.Context;
 
 import com.boris.schuimschuld.R;
+import com.boris.schuimschuld.serializers.AccountRegisterSerializer;
 import com.boris.schuimschuld.util.JsonWriterReader;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -15,14 +15,13 @@ public class AccountRegister {
     private Context context;
 
     public AccountRegister(Context context) {
-        register = new ArrayList<>();
         this.context = context;
         JsonWriterReader writer = new JsonWriterReader(context);
         if (writer.createFile("accounts.json")) {
             writer.copyFromRaw("accounts.json", R.raw.config, "accounts");
         }
         JSONObject accountsAsJson = writer.readFileFromInternal("accounts.json");
-        loadFromJson(accountsAsJson);
+        register = AccountRegisterSerializer.fromJson(context, accountsAsJson);
     }
 
     public void register(Account account) {
@@ -52,39 +51,6 @@ public class AccountRegister {
 
     public void save() {
         JsonWriterReader writerJson = new JsonWriterReader(context);
-        writerJson.writeFile("accounts.json", toJson());
-    }
-
-    public JSONObject toJson() {
-        JSONObject container = new JSONObject();
-        JSONArray accounts = new JSONArray();
-        for (Account account : register) {
-            accounts.add(account.toJson());
-        }
-        container.put("accounts", accounts);
-        return container;
-    }
-
-    public void loadFromJson(JSONObject accountsContainer) throws NullPointerException {
-        if (accountsContainer == null) {
-            throw new NullPointerException("Json accounts returned null");
-        }
-
-        register = new ArrayList<>();
-        JSONArray accounts = (JSONArray) accountsContainer.get("accounts");
-        for (Object account : accounts) {
-            JSONObject accountAsJson = (JSONObject) account;
-            String name = (String) accountAsJson.get("name");
-            Double balance = (Double) accountAsJson.get("balance");
-
-            ArrayList<Group> groups = new ArrayList<>();
-            JSONArray groupsAsJson = (JSONArray) accountAsJson.get("groups");
-            for (Object group : groupsAsJson) {
-                groups.add(Group.valueOf((String) group));
-            }
-
-            register.add(new Account(name, balance, groups, context));
-        }
-
+        writerJson.writeFile("accounts.json", AccountRegisterSerializer.toJson(this));
     }
 }

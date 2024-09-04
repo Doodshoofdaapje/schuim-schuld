@@ -94,19 +94,4 @@ public class Account implements Serializable {
     public Bitmap getPicture() {
         return profilePicture.getBitmap();
     }
-
-    public JSONObject toJson() {
-        JSONObject accountDetails = new JSONObject();
-
-        accountDetails.put("name", name);
-        accountDetails.put("balance", balance);
-
-        JSONArray groupsArray = new JSONArray();
-        for (Group group : groups) {
-            groupsArray.add(group.toString());
-        }
-        accountDetails.put("groups", groupsArray);
-
-        return accountDetails;
-    }
 }

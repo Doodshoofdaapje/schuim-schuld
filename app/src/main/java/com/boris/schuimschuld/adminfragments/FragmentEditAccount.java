@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.admin;
+package com.boris.schuimschuld.adminfragments;
 
 import android.os.Bundle;
 
@@ -6,14 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 
 import com.boris.schuimschuld.MainActivity;
 import com.boris.schuimschuld.R;
@@ -26,30 +23,22 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class FragmentNewAccount extends Fragment {
+public class FragmentEditAccount extends Fragment {
 
-    private com.boris.schuimschuld.databinding.FragmentAccountNewBinding binding;
-
-    // UI Components
-    private MainActivity mainActivity;
+    private com.boris.schuimschuld.databinding.FragmentAccountEditBinding binding;
     private FlexboxLayout flexboxLayout;
-    private Spinner groupSpinner;
 
-    // Account attribue
     private ArrayList<Group> selectedGroups;
+    private final String bundleKey = "ACCOUNT_DETAILS";
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        binding = com.boris.schuimschuld.databinding.FragmentAccountNewBinding.inflate(inflater, container, false);
-        mainActivity = (MainActivity) getActivity();
-        selectedGroups = new ArrayList<>();
-        flexboxLayout = binding.flexTagsAdd;
-        groupSpinner = binding.spinnerGroupAdd;
+        binding = com.boris.schuimschuld.databinding.FragmentAccountEditBinding.inflate(inflater, container, false);
+        flexboxLayout = binding.flexTagsEdit;
 
         return binding.getRoot();
     }
@@ -57,17 +46,24 @@ public class FragmentNewAccount extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Populate spinner
-        DynamicSpinnerFiller.age(groupSpinner, getActivity());
+        Bundle bundle = this.getArguments();
+        Account account = (Account) bundle.getSerializable(bundleKey);
+        selectedGroups = account.getGroups();
 
-        // Event add button
-        binding.buttonAdd.setOnClickListener(view1 -> addActionPerformed(view1));
+        // Populate UI
+        DynamicSpinnerFiller.age(binding.spinnerGroupEdit, getActivity());
+        binding.textInputNameEdit.setText(account.getName());
+        binding.textInputBalanceEdit.setText(account.getBalance().toString());
+        for (Group group : selectedGroups) {
+            flexboxLayout.addView(createGroupTag(group));
+        }
 
-        // Event cancel button
-        binding.buttonCancel.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack());
+        // Event handlers
+        binding.buttonChangeEdit.setOnClickListener(view1 -> editActionPerformed(account, view1));
 
-        // Event item selected in the spinner dropdown
-        groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.buttonCancelEdit.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentEditAccount.this).popBackStack());
+
+        binding.spinnerGroupEdit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectSpinnerItem(parent, position);
@@ -111,10 +107,10 @@ public class FragmentNewAccount extends Fragment {
         return tag;
     }
 
-    private void addActionPerformed(View view) {
+    private void editActionPerformed(Account account, View view) {
         try {
-            String name = binding.textInputNameAdd.getText().toString();
-            Double newBalance =  Double.parseDouble(binding.textInputBalanceAdd.getText().toString());
+            String name = binding.textInputNameEdit.getText().toString();
+            Double newBalance =  Double.parseDouble(binding.textInputBalanceEdit.getText().toString());
 
             if (name.isEmpty()) {
                 Snackbar errorMessage = Snackbar.make(view, "Geen naam ingevult", BaseTransientBottomBar.LENGTH_LONG);
@@ -128,9 +124,12 @@ public class FragmentNewAccount extends Fragment {
                 return;
             }
 
-            Account newAccount = new Account(name, newBalance, selectedGroups, getContext());
-            mainActivity.accountRegister.register(newAccount);
-            NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack();
+            account.setName(name);
+            account.setBalance(newBalance);
+            account.setGroups(selectedGroups);
+            ((MainActivity) getActivity()).accountRegister.save();
+            NavHostFragment.findNavController(FragmentEditAccount.this).popBackStack();
+
         } catch (NumberFormatException exception) {
             Snackbar errorMessage = Snackbar.make(view, "Vul a.u.b. alleen getallen in", BaseTransientBottomBar.LENGTH_LONG);
             errorMessage.show();
