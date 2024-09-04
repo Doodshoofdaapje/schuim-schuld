@@ -58,7 +58,7 @@
         android:label="Account Verwijderen"/>
     <fragment
         android:id="@+id/accountEditFragment"
-        android:name="com.boris.schuimschuld.admin.AccountEditFragment"
+        android:name="com.boris.schuimschuld.admin.FragmentEditAccount"
         android:label="Detail Weergave"/>
     <fragment
         android:id="@+id/accountDetailFragmentNew"
