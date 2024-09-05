@@ -1,9 +1,9 @@
 package com.boris.schuimschuld.accountoverview;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.util.PictureUtil;
+import com.boris.schuimschuld.util.SerialBitmap;
 
 public class AccountDetailFragment extends Fragment {
 
@@ -58,7 +60,7 @@ public class AccountDetailFragment extends Fragment {
         binding.textOutputGroupDetail.setText(groupString);
 
         ImageView profilePictureView = (ImageView) view.findViewById(R.id.imageOutputAccountDetail);
-        profilePictureView.setImageBitmap(account.loadProfilePicture(getContext()).getBitmap());
+        profilePictureView.setImageBitmap(account.getPicture());
         PictureUtil.roundPicture(profilePictureView);
 
         // Event Handlers
@@ -81,28 +83,36 @@ public class AccountDetailFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        someActivityResultLauncher.launch(intent);
+        imagePickerLauncher.launch(intent);
     }
 
     // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
+    ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Uri selectedImageUri = data.getData();
-                        if (selectedImageUri != null) {
-                            // update the preview image in the layout
-                            binding.imageOutputAccountDetail.setImageURI(selectedImageUri);
-                            Bitmap pfp = ((BitmapDrawable) binding.imageOutputAccountDetail.getDrawable()).getBitmap();
-                            account.setPicture(getContext(), pfp);
-                        }
-                    }
-                } else {
+                if (result.getResultCode() != Activity.RESULT_OK) {
+                    Log.e("Image Chooser", "Result not OK");
                     return;
                 }
-            });
+
+                Intent data = result.getData();
+                if (data == null) {
+                    Log.e("Image Chooser", "Data == null");
+                    return;
+                }
+
+                Uri selectedImageUri = data.getData();
+                if (selectedImageUri == null) {
+                    Log.e("Image Chooser", "URI == null");
+                    return;
+                }
+
+                // update the preview image in the layout
+                binding.imageOutputAccountDetail.setImageURI(selectedImageUri);
+                Bitmap pfp = ((BitmapDrawable) binding.imageOutputAccountDetail.getDrawable()).getBitmap();
+                account.setPicture(getContext(), pfp);
+            }
+    );
 
     private void createAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -110,19 +120,9 @@ public class AccountDetailFragment extends Fragment {
         builder.setTitle("Bevestig");
         builder.setMessage("Weet je zeker dat je een nieuwe foto wilt kiezen?");
 
-        builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                imageChooser();
-            }
-        });
+        builder.setPositiveButton("Ja", (dialog, which) -> imageChooser());
+        builder.setNegativeButton("Nee", (dialog, which) -> dialog.dismiss());
 
-        builder.setNegativeButton("Nee", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
         AlertDialog alert = builder.create();
         alert.show();
     }

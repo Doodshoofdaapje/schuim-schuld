@@ -23,4 +23,8 @@ public class PictureUtil {
         canvas.drawRoundRect((new RectF(0, 0, mPicture.getWidth(), mPicture.getHeight())), 15, 15, mpaint);
         profilePictureView.setImageBitmap(pictureRounded);
     }
+
+    public static SerialBitmap scalePicture(Bitmap bitmap, int width, int height) {
+        return new SerialBitmap(Bitmap.createScaledBitmap(bitmap, width, height, true));
+    }
 }

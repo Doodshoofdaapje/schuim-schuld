@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.databinding.FragmentChangePasswordBinding;
-import com.boris.schuimschuld.util.JsonWriterReader;
+import com.boris.schuimschuld.util.JsonFileHandler;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,7 +44,7 @@ public class FragmentChangePassword extends Fragment {
                     JSONObject passwordAsJson = new JSONObject();
                     passwordAsJson.put("password", newPassword);
 
-                    JsonWriterReader writer = new JsonWriterReader(getContext());
+                    JsonFileHandler writer = new JsonFileHandler(getContext());
                     writer.writeFile("password.json", passwordAsJson);
                     NavHostFragment.findNavController(FragmentChangePassword.this).popBackStack();
                 } else {

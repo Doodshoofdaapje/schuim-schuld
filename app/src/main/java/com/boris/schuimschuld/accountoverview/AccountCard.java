@@ -30,7 +30,7 @@ public class AccountCard extends ConstraintLayout {
 
         textOutputName.setText(account.getName());
 
-        Bitmap profilePicture = account.getPicture();
+        Bitmap profilePicture = PictureUtil.scalePicture(account.getPicture(), 80, 80).getBitmap();
         imageOutputAccount.setImageBitmap(profilePicture);
 
         PictureUtil.roundPicture(imageOutputAccount);

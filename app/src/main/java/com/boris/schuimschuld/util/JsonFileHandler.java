@@ -3,8 +3,6 @@ package com.boris.schuimschuld.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.boris.schuimschuld.R;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -19,10 +17,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonWriterReader {
+public class JsonFileHandler {
 
     private Context context;
-    public JsonWriterReader(Context context) {
+    public JsonFileHandler(Context context) {
         this.context = context;
     }
 

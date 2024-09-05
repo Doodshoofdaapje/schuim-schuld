@@ -11,7 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.databinding.FragmentLogInBinding;
-import com.boris.schuimschuld.util.JsonWriterReader;
+import com.boris.schuimschuld.util.JsonFileHandler;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -41,7 +41,7 @@ public class FragmentLogIn extends Fragment {
                 String username = binding.textInputUserNameLogIn.getText().toString();
                 String password = binding.textInputPasswordLogIn.getText().toString();
 
-                JsonWriterReader writerReader = new JsonWriterReader(getContext());
+                JsonFileHandler writerReader = new JsonFileHandler(getContext());
                 if (writerReader.createFile("password.json")) {
                     writerReader.copyFromRaw("password.json",  R.raw.config, "password");
                 }
