@@ -21,22 +21,35 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="400dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginStart="128dp"
         android:layout_marginTop="112dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginEnd="128dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:fillViewport="true">
 
-        <TableLayout
-            android:id="@+id/layoutAccountsHome"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/empty_tall_divider"
-            android:gravity="center"
-            android:showDividers="middle" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layoutAccountsHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:dividerDrawable="@drawable/empty_tall_divider"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showDivider="middle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 
     <Button
@@ -88,11 +101,11 @@
 
     <Spinner
         android:id="@+id/spinnerGroupHome"
-        android:backgroundTint="@color/soft_green"
         android:layout_width="200dp"
         android:layout_height="45dp"
-        android:layout_marginStart="149dp"
+        android:layout_marginStart="160dp"
         android:layout_marginTop="48dp"
+        android:backgroundTint="@color/soft_green"
         android:overlapAnchor="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -102,7 +115,7 @@
         android:layout_width="200dp"
         android:layout_height="45dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="147dp"
+        android:layout_marginEnd="149dp"
         android:backgroundTint="@color/soft_green"
         android:overlapAnchor="false"
         app:layout_constraintEnd_toEndOf="parent"

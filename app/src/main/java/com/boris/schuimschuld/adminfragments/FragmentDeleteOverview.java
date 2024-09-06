@@ -11,11 +11,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.MainActivity;
-import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
-import com.boris.schuimschuld.util.DynamicLayoutFillers;
 
 import java.util.ArrayList;
 
@@ -36,7 +34,9 @@ public class FragmentDeleteOverview extends BaseAccountOverviewFragment {
         super.onViewCreated(view, savedInstanceState);
         
         ArrayList<AccountCard> cards = createCards(activity.accountRegister.getAccounts());
-        DynamicLayoutFillers.Table(getContext(), getView().findViewById(R.id.layoutAccountsDelete), cards, 4);
+        for (AccountCard card : cards) {
+            binding.layoutAccountsDelete.addView(card);
+        }
 
         binding.buttonCancelRemove.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentDeleteOverview.this).popBackStack());
     }

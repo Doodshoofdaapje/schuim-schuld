@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.fragment.NavHostFragment;
@@ -15,8 +14,8 @@ import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
-import com.boris.schuimschuld.util.DynamicLayoutFillers;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
 
     private com.boris.schuimschuld.databinding.FragmentEditOverviewBinding binding;
     private MainActivity mainActivity;
-    private TableLayout layout;
+    private FlexboxLayout layout;
     private final String BUNDLE_KEY = "ACCOUNT_DETAILS";
 
     private final String sortInitialValue = "Sorteer";
@@ -98,10 +97,13 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
     }
 
     private void loadLayout() {
+        layout.removeAllViews();
         ArrayList<Account> accounts = mainActivity.accountRegister.getAccounts();
         sortAccounts(accounts);
         ArrayList<AccountCard> cards = createCards(accounts);
-        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
+        for (AccountCard card : cards) {
+            layout.addView(card);
+        }
     }
 
     private void sortAccounts(ArrayList<Account> accounts) {

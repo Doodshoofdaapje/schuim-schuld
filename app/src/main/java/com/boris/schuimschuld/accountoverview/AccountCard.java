@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.util.PictureUtil;
+import com.google.android.flexbox.FlexboxLayout;
 
 public class AccountCard extends ConstraintLayout {
 
@@ -23,10 +24,18 @@ public class AccountCard extends ConstraintLayout {
         this.addView(content);
         this.setMinimumWidth(300);
 
+        /*
+        FlexboxLayout.LayoutParams flexboxParams = new FlexboxLayout.LayoutParams(
+                FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                FlexboxLayout.LayoutParams.WRAP_CONTENT
+        );
+        flexboxParams.setMargins(25, 16, 25, 16);
+        this.setLayoutParams(flexboxParams);*/
+
         this.account = account;
 
-        TextView textOutputName = (TextView) findViewById(R.id.textOutputNameaccountCard);
-        ImageView imageOutputAccount = (ImageView) findViewById(R.id.imageOutputAccountCard);
+        TextView textOutputName = findViewById(R.id.textOutputNameaccountCard);
+        ImageView imageOutputAccount = findViewById(R.id.imageOutputAccountCard);
 
         textOutputName.setText(account.getName());
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,8 +17,8 @@ import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
-import com.boris.schuimschuld.util.DynamicLayoutFillers;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -34,7 +33,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private boolean selectionMode = false;
     private AccountRegister register;
     private MainActivity mainActivity;
-    private TableLayout layout;
+    private FlexboxLayout layout;
 
     private Boolean[] selectionStates;
     private ArrayList<Account> filteredAccounts;
@@ -174,10 +173,13 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void loadLayout() {
+        layout.removeAllViews();
         filterAccounts();
         sortAccounts();
         ArrayList<AccountCard> cards = createCards(filteredAccounts);
-        DynamicLayoutFillers.Table(getContext(), layout, cards, 4);
+        for (AccountCard card : cards) {
+            layout.addView(card);
+        }
     }
 
     private void resetFragment() {
