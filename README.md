@@ -1,5 +1,5 @@
 # Schuim Schuld
-This repository contains the source code for an Android app designed to track consumptions in an association setting. The app is primarily intended for small to medium-sized organizations, such as sports clubs, gyms, or recreational facilities, where tracking of consumptions is needed.
+This repository contains the source code for an Android app designed to track consumptions in an association setting. The app is primarily intended for small to medium-sized organizations, such as sports clubs, gyms, or recreational facilities, where tracking of consumptions is needed. The app's user interface is specifically designed for a 10.1-inch device, due to development time constraints.
 
 ## Features
 <ul>
