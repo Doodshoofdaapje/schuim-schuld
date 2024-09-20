@@ -2,11 +2,13 @@ package com.boris.schuimschuld.account;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.boris.schuimschuld.dataservices.AccountImageDataService;
 import com.boris.schuimschuld.util.SerialBitmap;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class Account implements Serializable {
@@ -15,7 +17,7 @@ public class Account implements Serializable {
     private String name;
     private Double balance;
     private ArrayList<Group> groups;
-    private SerialBitmap profilePicture;
+    private transient Bitmap profilePicture;
 
     public Account(String name, Double balance, ArrayList<Group> groups, Context context) {
         this.name = name;
@@ -38,7 +40,7 @@ public class Account implements Serializable {
     }
 
     public void setPicture(Context context, Bitmap picture) {
-        profilePicture = new SerialBitmap(picture);
+        profilePicture = picture;
         imageDataService.save(context, picture);
     }
 
@@ -55,7 +57,11 @@ public class Account implements Serializable {
     }
 
     public Bitmap getPicture() {
-        return profilePicture.getBitmap();
+        return profilePicture;
+    }
+
+    public Uri getPictureURI(Context context) {
+        return imageDataService.getURI(context);
     }
 
     public void delete(Context context) {

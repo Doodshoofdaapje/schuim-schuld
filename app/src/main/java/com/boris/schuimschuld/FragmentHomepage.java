@@ -234,6 +234,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("ACCOUNT_DETAILS", accountCard.getAccount());
+                bundle.putSerializable("ACCOUNT_PICTURE", accountCard.getAccount().getPictureURI(getContext()).toString());
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.action_fragmentHomePageBinding2_to_accountDetailFragmentNew, bundle);
             }

@@ -24,14 +24,6 @@ public class AccountCard extends ConstraintLayout {
         this.addView(content);
         this.setMinimumWidth(300);
 
-        /*
-        FlexboxLayout.LayoutParams flexboxParams = new FlexboxLayout.LayoutParams(
-                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                FlexboxLayout.LayoutParams.WRAP_CONTENT
-        );
-        flexboxParams.setMargins(25, 16, 25, 16);
-        this.setLayoutParams(flexboxParams);*/
-
         this.account = account;
 
         TextView textOutputName = findViewById(R.id.textOutputNameaccountCard);

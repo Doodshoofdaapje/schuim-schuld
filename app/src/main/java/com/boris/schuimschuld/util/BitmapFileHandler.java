@@ -25,7 +25,7 @@ public class BitmapFileHandler {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(file);
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
         } catch (Exception e) {
             Log.e("BitmapFileHandler", "Failed to save image");
             e.printStackTrace();
