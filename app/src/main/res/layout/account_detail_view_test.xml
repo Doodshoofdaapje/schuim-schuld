@@ -7,6 +7,46 @@
     android:background="@color/dark_grey"
     android:backgroundTint="@color/dark_grey">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/bg_account_detail_test"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout5"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout5">
+
+        <TextView
+            android:id="@+id/textOutputConsumptionCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false"
+            android:padding="0dp"
+            android:paddingTop="0dp"
+            android:text="220"
+            android:textColor="@color/white"
+            android:textSize="60sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Lifetime Consumpties"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
         android:id="@+id/buttonReturnDetail2"
         android:layout_width="wrap_content"

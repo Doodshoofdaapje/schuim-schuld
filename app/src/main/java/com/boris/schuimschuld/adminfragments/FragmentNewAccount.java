@@ -125,7 +125,7 @@ public class FragmentNewAccount extends Fragment {
                 return;
             }
 
-            Account newAccount = new Account(name, newBalance, selectedGroups, getContext());
+            Account newAccount = new Account(getContext(), name, newBalance, 0.0, selectedGroups);
             mainActivity.accountRegister.register(newAccount);
             NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack();
         } catch (NumberFormatException exception) {

@@ -10,11 +10,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class AccountSerializer {
 
     private static final String NAME_KEY = "name";
     private static final String BALANCE_KEY = "balance";
+    private static final String CONSUMPTION_COUNT_KEY = "consumptionCount";
     private static final String GROUPS_KEY = "groups";
 
     public static JSONObject toJson(Account account) {
@@ -22,6 +24,7 @@ public class AccountSerializer {
 
         accountDetails.put(NAME_KEY, account.getName());
         accountDetails.put(BALANCE_KEY, account.getBalance());
+        accountDetails.put(CONSUMPTION_COUNT_KEY, account.getConsumptionCount());
 
         JSONArray groupsArray = new JSONArray();
         for (Group group : account.getGroups()) {
@@ -34,15 +37,20 @@ public class AccountSerializer {
 
     public static Account fromJson(Context context, JSONObject accountAsJson) throws AccountParseException {
         try {
-            String name = (String) accountAsJson.get(NAME_KEY);
-            Double balance = (Double) accountAsJson.get(BALANCE_KEY);
-            JSONArray groupsAsJson = (JSONArray) accountAsJson.get(GROUPS_KEY);
+            String name = (String) accountAsJson.getOrDefault(NAME_KEY, "");
+            Double balance = (Double) accountAsJson.getOrDefault(BALANCE_KEY, 0.0);
+            Double consumptionCount = (Double) accountAsJson.getOrDefault(CONSUMPTION_COUNT_KEY, 0.0);
 
+            JSONArray groupsAsJson = (JSONArray) accountAsJson.get(GROUPS_KEY);
             ArrayList<Group> groups = new ArrayList<>();
-            for (Object group : groupsAsJson) {
-                groups.add(Group.valueOf((String) group));
+
+            if (groupsAsJson != null) {
+                for (Object group : groupsAsJson) {
+                    groups.add(Group.valueOf((String) group));
+                }
             }
-            return new Account(name, balance, groups, context);
+
+            return new Account(context, name, balance, consumptionCount, groups);
         } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();
             Log.e("AccountRegisterSerializer", e.getMessage());

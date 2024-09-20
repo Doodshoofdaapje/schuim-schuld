@@ -16,12 +16,14 @@ public class Account implements Serializable {
 
     private String name;
     private Double balance;
+    private Double consumptionCount;
     private ArrayList<Group> groups;
     private transient Bitmap profilePicture;
 
-    public Account(String name, Double balance, ArrayList<Group> groups, Context context) {
+    public Account(Context context, String name, Double balance, Double consumptionCount, ArrayList<Group> groups) {
         this.name = name;
         this.balance = balance;
+        this.consumptionCount = consumptionCount;
         this.groups = groups;
         this.imageDataService = new AccountImageDataService(name);
         this.profilePicture = imageDataService.load(context);
@@ -56,6 +58,10 @@ public class Account implements Serializable {
         return this.balance;
     }
 
+    public Double getConsumptionCount() {
+        return this.consumptionCount;
+    }
+
     public Bitmap getPicture() {
         return profilePicture;
     }
@@ -70,5 +76,6 @@ public class Account implements Serializable {
 
     public void pay() {
         this.balance -= 1;
+        this.consumptionCount += 1;
     }
 }

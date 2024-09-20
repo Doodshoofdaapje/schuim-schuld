@@ -60,6 +60,7 @@ public class AccountDetailFragment extends Fragment {
         // Populate UI
         binding.textOutputNameDetail.setText(account.getName());
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
+        binding.textOutputConsumptionCount.setText(String.valueOf(account.getConsumptionCount().intValue()));
 
         String groupString = "";
         for (Group group : account.getGroups()) {
@@ -146,7 +147,7 @@ public class AccountDetailFragment extends Fragment {
         try {
             Intent uCropIntent = UCrop.of(sourceUri, pfpUri)
                     .withAspectRatio(1, 1)
-                    .withMaxResultSize(128, 128)
+                    .withMaxResultSize(250, 250)
                     .getIntent(getActivity());
 
             imageCropLauncher.launch(uCropIntent);
