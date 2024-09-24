@@ -19,6 +19,10 @@ import org.json.simple.JSONObject;
 public class FragmentChangePassword extends Fragment {
 
     private FragmentChangePasswordBinding binding;
+    private final String CREDENTIALS_FILE = "credentials.json";
+    private final String CREDENTIALS_KEY = "credentials";
+    private final String PASSWORD_KEY = "password";
+    private final String USERNAME_KEY = "username";
 
     @Override
     public View onCreateView(
@@ -40,17 +44,18 @@ public class FragmentChangePassword extends Fragment {
                 String newPassword = binding.newPasswordField.getText().toString();
                 String confirmPassword = binding.confirmPasswordField.getText().toString();
 
-                if (newPassword.equals(confirmPassword)) {
-                    JSONObject passwordAsJson = new JSONObject();
-                    passwordAsJson.put("password", newPassword);
-
-                    JsonFileHandler writer = new JsonFileHandler(getContext());
-                    writer.writeFile("password.json", passwordAsJson);
-                    NavHostFragment.findNavController(FragmentChangePassword.this).popBackStack();
-                } else {
+                if (!newPassword.equals(confirmPassword)) {
                     Snackbar errorMessage = Snackbar.make(view, "Wachtwoorden komen niet overeen", BaseTransientBottomBar.LENGTH_LONG);
                     errorMessage.show();
+                    return;
                 }
+
+                JsonFileHandler fileHandler = new JsonFileHandler(getContext());
+                JSONObject storedCredentialsAsJson = fileHandler.readFileFromInternal(CREDENTIALS_FILE);
+                storedCredentialsAsJson.put(PASSWORD_KEY, newPassword);
+                fileHandler.writeFile(CREDENTIALS_FILE, storedCredentialsAsJson);
+
+                NavHostFragment.findNavController(FragmentChangePassword.this).popBackStack();
             }
         });
 

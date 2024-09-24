@@ -1,6 +1,7 @@
 {
-  "password":  {
-    "password": "admin"
+  "credentials":  {
+    "password": "admin",
+    "username": "Bas"
   },
   "accounts": {
     "accounts": [

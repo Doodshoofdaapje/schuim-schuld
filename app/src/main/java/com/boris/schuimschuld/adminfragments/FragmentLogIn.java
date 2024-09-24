@@ -20,6 +20,10 @@ import org.json.simple.JSONObject;
 public class FragmentLogIn extends Fragment {
 
     private FragmentLogInBinding binding;
+    private final String CREDENTIALS_FILE = "credentials.json";
+    private final String CREDENTIALS_KEY = "credentials";
+    private final String PASSWORD_KEY = "password";
+    private final String USERNAME_KEY = "username";
 
     @Override
     public View onCreateView(
@@ -38,21 +42,31 @@ public class FragmentLogIn extends Fragment {
         binding.buttonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = binding.textInputUserNameLogIn.getText().toString();
-                String password = binding.textInputPasswordLogIn.getText().toString();
+                try {
+                    String username = binding.textInputUserNameLogIn.getText().toString();
+                    String password = binding.textInputPasswordLogIn.getText().toString();
 
-                JsonFileHandler writerReader = new JsonFileHandler(getContext());
-                if (writerReader.createFile("password.json")) {
-                    writerReader.copyFromRaw("password.json",  R.raw.config, "password");
-                }
-                JSONObject storedPasswordAsJson = writerReader.readFileFromInternal("password.json");
-                String storedPassword = storedPasswordAsJson.get("password").toString();
+                    // Get credentials from file, or set default values if this file does not exists already
+                    JsonFileHandler writerReader = new JsonFileHandler(getContext());
+                    if (writerReader.createFile(CREDENTIALS_FILE)) {
+                        writerReader.copyFromRaw(CREDENTIALS_FILE, R.raw.config, CREDENTIALS_KEY);
+                    }
+                    JSONObject storedCredentialsAsJson = writerReader.readFileFromInternal(CREDENTIALS_FILE);
+                    String storedUsername = storedCredentialsAsJson.get(USERNAME_KEY).toString();
+                    String storedPassword = storedCredentialsAsJson.get(PASSWORD_KEY).toString();
 
-                if (username.equals("Bas") && password.equals(storedPassword)) {
+                    // Check credentials
+                    if (!username.equals(storedUsername) || !password.equals(storedPassword)) {
+                        Snackbar errorMessage = Snackbar.make(view, "Verkeerde gebruikersnaam en of wachtwoord", BaseTransientBottomBar.LENGTH_LONG);
+                        errorMessage.show();
+                        return;
+                    }
+
+                    // Navigate to admin menu
                     NavHostFragment.findNavController(FragmentLogIn.this)
                             .navigate(R.id.action_fragmentLogIn_to_fragmentAdminOverview2);
-                } else {
-                    Snackbar errorMessage = Snackbar.make(view, "Verkeerde gebruikersnaam en of wachtwoord", BaseTransientBottomBar.LENGTH_LONG);
+                } catch (NullPointerException e) {
+                    Snackbar errorMessage = Snackbar.make(view, "Vul beide velden in", BaseTransientBottomBar.LENGTH_LONG);
                     errorMessage.show();
                 }
             }
