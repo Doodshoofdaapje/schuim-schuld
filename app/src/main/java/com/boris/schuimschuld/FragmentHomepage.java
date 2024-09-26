@@ -118,7 +118,12 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         selectionStates[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionStates[register.getAccounts().indexOf(accountCard.getAccount())];
 
         // Update selection count
-        long count = Arrays.stream(selectionStates).mapToInt(b -> b ? 1 : 0).sum();
+        int count = 0;
+        for (Boolean selection : selectionStates) {
+            if (selection == true) {
+                count +=1;
+            }
+        }
         binding.selectionCountView.setText(String.valueOf(count));
     }
 
@@ -212,9 +217,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         if (selectedSortAsString.equals(sortInitialValue)) {
             filterAccounts();
         } else if (selectedSortAsString.equals(sortAscendingValue)) {
-            Collections.sort(filteredAccounts, Comparator.comparing(Account::getName));
+            Collections.sort(filteredAccounts, (a1, a2) -> a1.getName().compareTo(a2.getName()));
         } else if (selectedSortAsString.equals(sortDescendingValue)) {
-            Collections.sort(filteredAccounts, Comparator.comparing(Account::getName).reversed());
+            Collections.sort(filteredAccounts, (a1, a2) -> a2.getName().compareTo(a1.getName()));
         }
     }
 

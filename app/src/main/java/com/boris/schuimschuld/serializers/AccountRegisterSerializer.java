@@ -44,11 +44,11 @@ public class AccountRegisterSerializer {
             return register;
         } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();
-            Log.e("AccountRegisterSerializer", e.getMessage());
+            Log.e("AccountSerializer", e.getMessage());
             return new ArrayList<>();
         } catch (AccountParseException e) {
             e.printStackTrace();
-            Log.e("AccountRegisterSerializer", e.getMessage());
+            Log.e("AccountSerializer", e.getMessage());
             return new ArrayList<>();
         }
     }

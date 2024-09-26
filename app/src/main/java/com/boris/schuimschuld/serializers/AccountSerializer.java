@@ -37,9 +37,18 @@ public class AccountSerializer {
 
     public static Account fromJson(Context context, JSONObject accountAsJson) throws AccountParseException {
         try {
-            String name = (String) accountAsJson.getOrDefault(NAME_KEY, "");
-            Double balance = (Double) accountAsJson.getOrDefault(BALANCE_KEY, 0.0);
-            Double consumptionCount = (Double) accountAsJson.getOrDefault(CONSUMPTION_COUNT_KEY, 0.0);
+            String name = (String) accountAsJson.get(NAME_KEY);
+            if (name == null) {
+                name = "";
+            }
+            Double balance = (Double) accountAsJson.get(BALANCE_KEY);
+            if (balance == null) {
+                balance = 0.0;
+            }
+            Double consumptionCount = (Double) accountAsJson.get(CONSUMPTION_COUNT_KEY);
+            if (consumptionCount == null) {
+                consumptionCount = 0.0;
+            }
 
             JSONArray groupsAsJson = (JSONArray) accountAsJson.get(GROUPS_KEY);
             ArrayList<Group> groups = new ArrayList<>();
@@ -53,7 +62,7 @@ public class AccountSerializer {
             return new Account(context, name, balance, consumptionCount, groups);
         } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();
-            Log.e("AccountRegisterSerializer", e.getMessage());
+            Log.e("AccountSerializer", e.getMessage());
             throw new AccountParseException("Error parsing account JSON", e);
         }
     }

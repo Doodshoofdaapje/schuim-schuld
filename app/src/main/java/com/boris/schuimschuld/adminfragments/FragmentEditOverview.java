@@ -109,9 +109,9 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
     private void sortAccounts(ArrayList<Account> accounts) {
         String selectedSortAsString = (String) binding.spinnerSortingEdit.getSelectedItem();
         if (selectedSortAsString.equals(sortAscendingValue)) {
-            Collections.sort(accounts, Comparator.comparing(Account::getBalance));
+            Collections.sort(accounts, (a1, a2) -> a1.getBalance().compareTo(a2.getBalance()));
         } else if (selectedSortAsString.equals(sortDescendingValue)) {
-            Collections.sort(accounts, Comparator.comparing(Account::getBalance).reversed());
+            Collections.sort(accounts, (a1, a2) -> a2.getBalance().compareTo(a1.getBalance()));
         }
     }
 
