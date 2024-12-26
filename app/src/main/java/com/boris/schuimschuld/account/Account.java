@@ -37,6 +37,10 @@ public class Account implements Serializable {
         this.balance = newBalance;
     }
 
+    public void setConsumptionCount(Double newConsumptionCount) {
+        this.consumptionCount = newConsumptionCount;
+    }
+
     public void setGroups(ArrayList<Group> newGroups) {
         this.groups = newGroups;
     }

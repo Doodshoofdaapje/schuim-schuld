@@ -57,13 +57,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="64dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="64dp"
             app:flexDirection="row"
             app:flexWrap="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputBalanceEdit">
+            app:layout_constraintTop_toBottomOf="@+id/textInputLifetime">
 
 
         </com.google.android.flexbox.FlexboxLayout>
@@ -72,7 +72,7 @@
             android:id="@+id/spinnerGroupEdit"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/soft_green"
             android:overlapAnchor="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,7 @@
             android:id="@+id/textInputBalanceEdit"
             android:layout_width="400dp"
             android:layout_height="40dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:background="@color/mid_grey"
             android:fontFamily="sans-serif-medium"
             android:hint="Type hier"
@@ -92,6 +92,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputNameEdit" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputLifetime"
+            android:layout_width="400dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/mid_grey"
+            android:fontFamily="sans-serif-medium"
+            android:hint="Type hier"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputBalanceEdit" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInputNameEdit"

@@ -74,4 +74,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/buttonBackup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Backup Maken"
+        app:layout_constraintBottom_toTopOf="@+id/buttonChangeCredentialsAdminPanel"
+        app:layout_constraintEnd_toEndOf="@+id/buttonChangeCredentialsAdminPanel"
+        app:layout_constraintStart_toStartOf="@+id/buttonChangeCredentialsAdminPanel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

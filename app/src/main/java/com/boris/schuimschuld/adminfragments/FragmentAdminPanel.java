@@ -4,13 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.databinding.FragmentAdminPanelBinding;
+
+import java.io.File;
 
 public class FragmentAdminPanel extends Fragment {
 
@@ -65,6 +70,21 @@ private FragmentAdminPanelBinding binding;
             public void onClick(View view) {
                 NavHostFragment.findNavController(FragmentAdminPanel.this)
                         .navigate(R.id.action_fragmentAdminOverview2_to_fragmentChangePassword);
+            }
+        });
+
+        binding.buttonBackup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file = new File(getContext().getFilesDir(), "accounts.json");
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("application/json"); // Change this to your file's type
+                Uri fileUri = FileProvider.getUriForFile(getContext(), "com.boris.schuimschuld.fileprovider", file);
+                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                intent.setPackage("com.google.android.apps.docs"); // Opens Google Drive directly
+
+                startActivity(Intent.createChooser(intent, "Save file to"));
             }
         });
     }

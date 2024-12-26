@@ -54,6 +54,7 @@ public class FragmentEditAccount extends Fragment {
         DynamicSpinnerFiller.age(binding.spinnerGroupEdit, getActivity());
         binding.textInputNameEdit.setText(account.getName());
         binding.textInputBalanceEdit.setText(account.getBalance().toString());
+        binding.textInputLifetime.setText(account.getConsumptionCount().toString());
         for (Group group : selectedGroups) {
             flexboxLayout.addView(createGroupTag(group));
         }
@@ -111,6 +112,7 @@ public class FragmentEditAccount extends Fragment {
         try {
             String name = binding.textInputNameEdit.getText().toString();
             Double newBalance =  Double.parseDouble(binding.textInputBalanceEdit.getText().toString());
+            Double newConsumptionCount =  Double.parseDouble(binding.textInputLifetime.getText().toString());
 
             if (name.isEmpty()) {
                 Snackbar errorMessage = Snackbar.make(view, "Geen naam ingevult", BaseTransientBottomBar.LENGTH_LONG);
@@ -126,6 +128,7 @@ public class FragmentEditAccount extends Fragment {
 
             account.setName(name);
             account.setBalance(newBalance);
+            account.setConsumptionCount(newConsumptionCount);
             account.setGroups(selectedGroups);
             ((MainActivity) getActivity()).accountRegister.save();
             NavHostFragment.findNavController(FragmentEditAccount.this).popBackStack();
