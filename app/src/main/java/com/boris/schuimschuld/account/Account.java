@@ -78,8 +78,8 @@ public class Account implements Serializable {
         imageDataService.delete(context);
     }
 
-    public void pay() {
-        this.balance -= 1;
-        this.consumptionCount += 1;
+    public void pay(int amount) {
+        this.balance -= amount;
+        this.consumptionCount += amount;
     }
 }

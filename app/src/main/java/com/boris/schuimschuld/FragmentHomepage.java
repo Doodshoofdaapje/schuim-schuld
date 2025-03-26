@@ -36,6 +36,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private FlexboxLayout layout;
 
     private Boolean[] selectionStates;
+    private int[] countStates;
     private ArrayList<Account> filteredAccounts;
 
     private final String sortInitialValue = "Sorteer";
@@ -54,6 +55,8 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
         this.selectionStates = new Boolean[register.size()];
         Arrays.fill(selectionStates, Boolean.FALSE);
+        this.countStates = new int[register.size()];
+        Arrays.fill(countStates, 1);
 
         return binding.getRoot();
     }
@@ -115,7 +118,8 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private void selectAccount(AccountCard accountCard) {
         // Select Account
         accountCard.setSelected(!accountCard.isSelected());
-        selectionStates[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionStates[register.getAccounts().indexOf(accountCard.getAccount())];
+        int accountIndex = register.getAccounts().indexOf(accountCard.getAccount());
+        selectionStates[accountIndex] = !selectionStates[accountIndex];
 
         // Update selection count
         int count = 0;
@@ -127,11 +131,22 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.selectionCountView.setText(String.valueOf(count));
     }
 
+    private void updateCounterAccount(AccountCard accountCard, int difference) {
+        int accountIndex = register.getAccounts().indexOf(accountCard.getAccount());
+
+        if (countStates[accountIndex] + difference >= 0) {
+            countStates[accountIndex] += difference;
+        }
+
+        accountCard.setCounter(countStates[accountIndex]);
+    }
+
     private void chargeSelectedAccounts(MainActivity activity) {
         ArrayList<Account> accounts = register.getAccounts();
         for (int i = 0; i< selectionStates.length; i++) {
             if(selectionStates[i]) {
-                accounts.get(i).pay();
+                int drinkCount = countStates[i];
+                accounts.get(i).pay(drinkCount);
                 register.save();
             }
         }
@@ -243,6 +258,14 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.action_fragmentHomePageBinding2_to_accountDetailFragmentNew, bundle);
             }
+        });
+
+        accountCard.findViewById(R.id.accountCardPlus).setOnClickListener(view -> {
+            updateCounterAccount(accountCard, 1);
+        });
+
+        accountCard.findViewById(R.id.accountCardMinus).setOnClickListener(view -> {
+            updateCounterAccount(accountCard, -1);
         });
     }
 }

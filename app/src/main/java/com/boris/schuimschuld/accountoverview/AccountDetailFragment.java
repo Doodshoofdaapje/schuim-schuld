@@ -31,7 +31,7 @@ import com.boris.schuimschuld.util.PictureUtil;
 
 public class AccountDetailFragment extends Fragment {
 
-    private com.boris.schuimschuld.databinding.AccountDetailViewTestBinding binding;
+    private com.boris.schuimschuld.databinding.AccountDetailViewBinding binding;
     private ActivityResultLauncher<Intent> imageSelectionLauncher;
     private ActivityResultLauncher<Intent> imageCropLauncher;
 
@@ -46,7 +46,7 @@ public class AccountDetailFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        binding = com.boris.schuimschuld.databinding.AccountDetailViewTestBinding.inflate(inflater, container, false);
+        binding = com.boris.schuimschuld.databinding.AccountDetailViewBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
