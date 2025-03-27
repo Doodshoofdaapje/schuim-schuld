@@ -1,7 +1,6 @@
 package com.boris.schuimschuld.services;
 
 import com.boris.schuimschuld.account.Account;
-import com.boris.schuimschuld.account.AccountRegister;
 import com.boris.schuimschuld.dataservices.IAccountManager;
 
 public class PaymentService {

@@ -2,8 +2,6 @@ package com.boris.schuimschuld;
 
 import android.os.Bundle;
 
-import com.boris.schuimschuld.account.AccountRegister;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
