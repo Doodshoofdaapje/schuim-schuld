@@ -17,6 +17,8 @@ import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
+import com.boris.schuimschuld.dataservices.IAccountManager;
+import com.boris.schuimschuld.services.PaymentService;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -26,17 +28,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class FragmentHomepage extends BaseAccountOverviewFragment implements IOnBackPressed {
 
     private com.boris.schuimschuld.databinding.FragmentHomePageBinding binding;
     private boolean selectionMode = false;
-    private AccountRegister register;
+    private IAccountManager accountManager;
     private MainActivity mainActivity;
     private FlexboxLayout layout;
 
-    private Boolean[] selectionStates;
-    private int[] countStates;
+    private HashMap<UUID, Boolean> accountSelectionMap;
+    private HashMap<UUID, Integer> accountCountMap;
     private ArrayList<Account> filteredAccounts;
 
     private final String sortInitialValue = "Sorteer";
@@ -49,14 +54,16 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding = com.boris.schuimschuld.databinding.FragmentHomePageBinding.inflate(inflater, container, false);
 
         this.mainActivity = (MainActivity) getActivity();
-        this.register = mainActivity.accountRegister;
-        this.filteredAccounts = register.getAccounts();
+        this.accountManager = mainActivity.accountManager;
+        this.filteredAccounts = accountManager.getAll();
         this.layout = binding.layoutAccountsHome;
 
-        this.selectionStates = new Boolean[register.size()];
-        Arrays.fill(selectionStates, Boolean.FALSE);
-        this.countStates = new int[register.size()];
-        Arrays.fill(countStates, 1);
+        this.accountSelectionMap = new HashMap<>();
+        this.accountCountMap = new HashMap<>();
+        for (Account account : accountManager.getAll()) {
+            accountSelectionMap.put(account.getUuid(), false);
+            accountCountMap.put(account.getUuid(), 1);
+        }
 
         return binding.getRoot();
     }
@@ -118,12 +125,12 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private void selectAccount(AccountCard accountCard) {
         // Select Account
         accountCard.setSelected(!accountCard.isSelected());
-        int accountIndex = register.getAccounts().indexOf(accountCard.getAccount());
-        selectionStates[accountIndex] = !selectionStates[accountIndex];
+        UUID accountUuid = accountCard.getAccount().getUuid();
+        accountSelectionMap.put(accountUuid, !accountSelectionMap.get(accountUuid));
 
         // Update selection count
         int count = 0;
-        for (Boolean selection : selectionStates) {
+        for (Boolean selection : accountSelectionMap.values()) {
             if (selection == true) {
                 count +=1;
             }
@@ -132,22 +139,22 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void updateCounterAccount(AccountCard accountCard, int difference) {
-        int accountIndex = register.getAccounts().indexOf(accountCard.getAccount());
+        UUID accountUuid = accountCard.getAccount().getUuid();
 
-        if (countStates[accountIndex] + difference >= 0) {
-            countStates[accountIndex] += difference;
+        if (accountCountMap.get(accountUuid) + difference >= 0) {
+            accountCountMap.put(accountUuid, accountCountMap.get(accountUuid) + difference);
         }
 
-        accountCard.setCounter(countStates[accountIndex]);
+        accountCard.setCounter(accountCountMap.get(accountUuid));
     }
 
     private void chargeSelectedAccounts(MainActivity activity) {
-        ArrayList<Account> accounts = register.getAccounts();
-        for (int i = 0; i< selectionStates.length; i++) {
-            if(selectionStates[i]) {
-                int drinkCount = countStates[i];
-                accounts.get(i).pay(drinkCount);
-                register.save();
+        PaymentService paymentService = new PaymentService(accountManager);
+
+        for (Map.Entry<UUID, Boolean> kv : accountSelectionMap.entrySet()) {
+            if (kv.getValue()) {
+                int drinkCount = accountCountMap.get(kv.getKey());
+                paymentService.chargeAccount(accountManager.get(kv.getKey()), drinkCount);
             }
         }
 
@@ -207,7 +214,10 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         loadLayout();
 
         // Reset selection
-        Arrays.fill(selectionStates, Boolean.FALSE);
+        for (Account account : accountManager.getAll()) {
+            accountSelectionMap.put(account.getUuid(), false);
+            accountCountMap.put(account.getUuid(), 1);
+        }
     }
 
     private void filterAccounts() {
@@ -215,11 +225,11 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         filteredAccounts = new ArrayList<>();
 
         if (selectedGroupAsString.equals(filterInitialValue)) {
-            filteredAccounts = register.getAccounts();
+            filteredAccounts = accountManager.getAll();
         }
         else {
             Group selectedGroup = Group.valueOf(selectedGroupAsString);
-            for (Account account : register.getAccounts()) {
+            for (Account account : accountManager.getAll()) {
                 if (account.getGroups().contains(selectedGroup)) {
                     filteredAccounts.add(account);
                 }

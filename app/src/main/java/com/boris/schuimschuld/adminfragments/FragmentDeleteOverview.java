@@ -33,7 +33,7 @@ public class FragmentDeleteOverview extends BaseAccountOverviewFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        ArrayList<AccountCard> cards = createCards(activity.accountRegister.getAccounts());
+        ArrayList<AccountCard> cards = createCards(activity.accountManager.getAll());
         for (AccountCard card : cards) {
             binding.layoutAccountsDelete.addView(card);
         }
@@ -59,7 +59,7 @@ public class FragmentDeleteOverview extends BaseAccountOverviewFragment {
         builder.setMessage("Weet je zeker dat je door wilt gaan?");
 
         builder.setPositiveButton("Ja", (dialog, which) -> {
-            activity.accountRegister.deregister(account);
+            activity.accountManager.delete(account);
             dialog.dismiss();
             NavHostFragment.findNavController(this).popBackStack();
         });

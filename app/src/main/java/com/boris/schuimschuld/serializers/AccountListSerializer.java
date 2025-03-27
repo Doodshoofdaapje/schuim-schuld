@@ -4,25 +4,24 @@ import android.content.Context;
 import android.util.Log;
 
 import com.boris.schuimschuld.account.Account;
-import com.boris.schuimschuld.account.AccountRegister;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
-public class AccountRegisterSerializer {
+public class AccountListSerializer {
 
     private static final String ACCOUNTS_KEY = "accounts";
 
-    public static JSONObject toJson(AccountRegister register) {
+    public static JSONObject toJson(ArrayList<Account> accounts) {
         JSONObject container = new JSONObject();
-        JSONArray accounts = new JSONArray();
+        JSONArray accountsArray = new JSONArray();
 
-        for (Account account : register.getAccounts()) {
-            accounts.add(AccountSerializer.toJson(account));
+        for (Account account : accounts) {
+            accountsArray.add(AccountSerializer.toJson(account));
         }
-        container.put(ACCOUNTS_KEY, accounts);
+        container.put(ACCOUNTS_KEY, accountsArray);
 
         return container;
     }

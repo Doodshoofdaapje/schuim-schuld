@@ -98,7 +98,7 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
 
     private void loadLayout() {
         layout.removeAllViews();
-        ArrayList<Account> accounts = mainActivity.accountRegister.getAccounts();
+        ArrayList<Account> accounts = mainActivity.accountManager.getAll();
         sortAccounts(accounts);
         ArrayList<AccountCard> cards = createCards(accounts);
         for (AccountCard card : cards) {

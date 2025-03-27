@@ -11,9 +11,11 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 public class AccountSerializer {
 
+    private static final String UUID_KEY = "uuid";
     private static final String NAME_KEY = "name";
     private static final String BALANCE_KEY = "balance";
     private static final String CONSUMPTION_COUNT_KEY = "consumptionCount";
@@ -22,6 +24,7 @@ public class AccountSerializer {
     public static JSONObject toJson(Account account) {
         JSONObject accountDetails = new JSONObject();
 
+        accountDetails.put(UUID_KEY, account.getUuid().toString());
         accountDetails.put(NAME_KEY, account.getName());
         accountDetails.put(BALANCE_KEY, account.getBalance());
         accountDetails.put(CONSUMPTION_COUNT_KEY, account.getConsumptionCount());
@@ -37,6 +40,12 @@ public class AccountSerializer {
 
     public static Account fromJson(Context context, JSONObject accountAsJson) throws AccountParseException {
         try {
+            String uuidString = (String) accountAsJson.get(UUID_KEY);
+            if (uuidString == null) {
+                uuidString = UUID.randomUUID().toString();
+            }
+            UUID uuid = UUID.fromString(uuidString);
+
             String name = (String) accountAsJson.get(NAME_KEY);
             if (name == null) {
                 name = "";
@@ -59,7 +68,7 @@ public class AccountSerializer {
                 }
             }
 
-            return new Account(context, name, balance, consumptionCount, groups);
+            return new Account(context, uuid, name, balance, consumptionCount, groups);
         } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();
             Log.e("AccountSerializer", e.getMessage());

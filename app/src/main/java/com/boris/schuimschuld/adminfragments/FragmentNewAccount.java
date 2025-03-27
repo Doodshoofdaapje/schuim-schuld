@@ -126,7 +126,7 @@ public class FragmentNewAccount extends Fragment {
             }
 
             Account newAccount = new Account(getContext(), name, newBalance, 0.0, selectedGroups);
-            mainActivity.accountRegister.register(newAccount);
+            mainActivity.accountManager.create(newAccount);
             NavHostFragment.findNavController(FragmentNewAccount.this).popBackStack();
         } catch (NumberFormatException exception) {
             Snackbar errorMessage = Snackbar.make(view, "Vul a.u.b. alleen getallen in", BaseTransientBottomBar.LENGTH_LONG);

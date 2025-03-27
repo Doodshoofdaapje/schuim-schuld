@@ -8,12 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.databinding.ActivityMainBinding;
+import com.boris.schuimschuld.dataservices.AccountManagerJson;
+import com.boris.schuimschuld.dataservices.IAccountManager;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    public AccountRegister accountRegister;
+    public IAccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.accountRegister = new AccountRegister(this);
+        this.accountManager = new AccountManagerJson(this);
 
         super.onCreate(savedInstanceState);
 
