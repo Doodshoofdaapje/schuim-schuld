@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.databinding.ActivityMainBinding;
 import com.boris.schuimschuld.dataservices.AccountManagerJson;
+import com.boris.schuimschuld.dataservices.AccountManagerSQL;
 import com.boris.schuimschuld.dataservices.IAccountManager;
 
 import android.view.Menu;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.accountManager = new AccountManagerJson(this);
+        this.accountManager = new AccountManagerSQL(this);
 
         super.onCreate(savedInstanceState);
 
@@ -81,5 +82,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (accountManager instanceof AccountManagerSQL) {
+            accountManager.close();
+        }
+        super.onDestroy();
     }
 }

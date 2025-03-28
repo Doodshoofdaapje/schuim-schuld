@@ -31,7 +31,7 @@ public class Account implements Serializable {
         this.balance = balance;
         this.consumptionCount = consumptionCount;
         this.groups = groups;
-        this.imageDataService = new AccountImageDataService(name);
+        this.imageDataService = new AccountImageDataService(uuid.toString());
         this.profilePicture = imageDataService.load(context);
     }
 

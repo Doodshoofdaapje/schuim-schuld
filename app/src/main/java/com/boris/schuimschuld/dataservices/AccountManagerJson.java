@@ -67,4 +67,8 @@ public class AccountManagerJson implements IAccountManager {
         ArrayList<Account> accounts = dataService.load();
         return accounts.size();
     }
+
+    public void close() {
+        return;
+    }
 }

@@ -12,6 +12,6 @@ public interface IAccountManager {
     ArrayList<Account> getAll();
     void update(Account account);
     void delete(Account account);
-
     int size();
+    void close();
 }
