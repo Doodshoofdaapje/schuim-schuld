@@ -1,24 +1,22 @@
-package com.boris.schuimschuld.dataservices;
+package com.boris.schuimschuld.dataservices.contracts;
 
 import android.provider.BaseColumns;
 
-public final class ContractTransaction {
-    private ContractTransaction() {}
+public final class ContractGroups {
+    private ContractGroups() {}
 
     /* Inner class that defines the table contents */
     public static class GroupEntry implements BaseColumns {
-        public static final String TABLE_NAME = "transactions";
+        public static final String TABLE_NAME = "groups";
         public static final String ACCOUNT_UUID = "account_uuid";
-        public static final String AMOUNT = "amount";
-        public static final String DATE = "date";
+        public static final String GROUP = "group_name";
     }
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + GroupEntry.TABLE_NAME + " (" +
                     GroupEntry._ID + " INTEGER PRIMARY KEY, " +
                     GroupEntry.ACCOUNT_UUID + " TEXT, " +
-                    GroupEntry.AMOUNT + " REAL, " +
-                    GroupEntry.DATE + " TEXT, " +
+                    GroupEntry.GROUP + " TEXT, " +
                     "FOREIGN KEY(" + GroupEntry.ACCOUNT_UUID + ") REFERENCES " +
                     ContractAccounts.AccountEntry.TABLE_NAME + "(" + ContractAccounts.AccountEntry.UUID + ") " +
                     "ON DELETE CASCADE)";

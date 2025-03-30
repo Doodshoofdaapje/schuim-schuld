@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.dataservices;
+package com.boris.schuimschuld.dataservices.managers;
 
 import com.boris.schuimschuld.account.Account;
 

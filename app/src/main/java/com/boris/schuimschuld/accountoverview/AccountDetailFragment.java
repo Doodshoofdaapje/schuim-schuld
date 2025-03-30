@@ -15,9 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.boris.schuimschuld.dataservices.managers.ITransactionManager;
+import com.boris.schuimschuld.dataservices.managers.TransactionFactory;
+import com.boris.schuimschuld.dataservices.managers.TransactionManagerSQL;
 import com.yalantis.ucrop.UCrop;
 
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +55,8 @@ public class AccountDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ITransactionManager transactionManager = TransactionFactory.create(getContext());
+
         Bundle bundle = this.getArguments();
         account = (Account) bundle.getSerializable(bundleKey);
         pfpUri = Uri.parse((String) bundle.getSerializable(bundlePictureKey));
@@ -60,7 +64,7 @@ public class AccountDetailFragment extends Fragment {
         // Populate UI
         binding.textOutputNameDetail.setText(account.getName());
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
-        binding.textOutputConsumptionCount.setText(String.valueOf(account.getConsumptionCount().intValue()));
+        binding.textOutputConsumptionCount.setText(String.valueOf(transactionManager.count(account)));
 
         String groupString = "";
         for (Group group : account.getGroups()) {

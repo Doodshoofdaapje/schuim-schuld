@@ -11,9 +11,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.databinding.ActivityMainBinding;
-import com.boris.schuimschuld.dataservices.AccountManagerJson;
-import com.boris.schuimschuld.dataservices.AccountManagerSQL;
-import com.boris.schuimschuld.dataservices.IAccountManager;
+import com.boris.schuimschuld.dataservices.managers.AccountFactory;
+import com.boris.schuimschuld.dataservices.managers.AccountManagerSQL;
+import com.boris.schuimschuld.dataservices.managers.IAccountManager;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.accountManager = new AccountManagerSQL(this);
+        this.accountManager = AccountFactory.create(this);
 
         super.onCreate(savedInstanceState);
 

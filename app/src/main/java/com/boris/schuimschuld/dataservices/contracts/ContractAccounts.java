@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.dataservices;
+package com.boris.schuimschuld.dataservices.contracts;
 
 import android.provider.BaseColumns;
 

@@ -12,6 +12,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.boris.schuimschuld.BuildConfig;
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.databinding.FragmentAdminPanelBinding;
 
@@ -60,15 +61,22 @@ private FragmentAdminPanelBinding binding;
                 .navigate(R.id.action_fragmentAdminOverview2_to_fragmentChangePassword));
 
         binding.buttonBackup.setOnClickListener(view16 -> {
-            File file = new File(getContext().getFilesDir(), "accounts.json");
+            File file;
+            String backupFileName;
 
             // Get date
             Date currentTime = Calendar.getInstance().getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(currentTime);
 
-            // Create backup file
-            String backupFileName = "accounts_" + formattedDate + ".json";
+            if (BuildConfig.DB_SQL) {
+                file = getContext().getDatabasePath("database_schuimschuld.db");
+                backupFileName = "accounts_" + formattedDate + ".db";
+            } else {
+                file = new File(getContext().getFilesDir(), "accounts.json");
+                backupFileName = "accounts_" + formattedDate + ".json";
+            }
+
             File backupFile = new File(getContext().getFilesDir(), backupFileName);
 
             // Copy file contents
@@ -82,7 +90,12 @@ private FragmentAdminPanelBinding binding;
             }
 
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("application/json"); // Change this to your file's type
+            if (BuildConfig.DB_SQL) {
+                intent.setType("application/db");
+            } else {
+                intent.setType("application/json");
+            }
+
             Uri fileUri = FileProvider.getUriForFile(getContext(), "com.boris.schuimschuld.fileprovider", backupFile);
             intent.putExtra(Intent.EXTRA_STREAM, fileUri);
             intent.setPackage("com.google.android.apps.docs"); // Opens Google Drive directly

@@ -1,8 +1,9 @@
-package com.boris.schuimschuld.dataservices;
+package com.boris.schuimschuld.dataservices.managers;
 
 import android.content.Context;
 
 import com.boris.schuimschuld.account.Account;
+import com.boris.schuimschuld.dataservices.AccountListDataService;
 
 import java.util.ArrayList;
 import java.util.UUID;

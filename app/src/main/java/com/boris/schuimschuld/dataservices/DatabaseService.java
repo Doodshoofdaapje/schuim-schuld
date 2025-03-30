@@ -4,8 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.boris.schuimschuld.dataservices.contracts.ContractAccounts;
+import com.boris.schuimschuld.dataservices.contracts.ContractGroups;
+import com.boris.schuimschuld.dataservices.contracts.ContractTransaction;
+
 public class DatabaseService extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "database_schuimschuld.db";
 
     public DatabaseService(Context context) {

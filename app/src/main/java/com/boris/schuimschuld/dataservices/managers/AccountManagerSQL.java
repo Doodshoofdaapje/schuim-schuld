@@ -1,4 +1,4 @@
-package com.boris.schuimschuld.dataservices;
+package com.boris.schuimschuld.dataservices.managers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.Group;
+import com.boris.schuimschuld.dataservices.DatabaseService;
+import com.boris.schuimschuld.dataservices.contracts.ContractAccounts;
+import com.boris.schuimschuld.dataservices.contracts.ContractGroups;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -107,7 +110,9 @@ public class AccountManagerSQL implements IAccountManager{
             balance = cursor.getDouble(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.BALANCE));
             uuid = nUuid;
         }
-        accounts.add(new Account(context, uuid, name, balance, 0.0, groups)); // Final account
+        if (uuid != null) {
+            accounts.add(new Account(context, uuid, name, balance, 0.0, groups)); // Final account
+        }
         cursor.close();
         return accounts;
     }

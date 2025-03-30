@@ -16,7 +16,7 @@ import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
-import com.boris.schuimschuld.dataservices.IAccountManager;
+import com.boris.schuimschuld.dataservices.managers.IAccountManager;
 import com.boris.schuimschuld.services.PaymentService;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.flexbox.FlexboxLayout;
@@ -147,7 +147,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void chargeSelectedAccounts(MainActivity activity) {
-        PaymentService paymentService = new PaymentService(accountManager);
+        PaymentService paymentService = new PaymentService(getContext(), accountManager);
 
         for (Map.Entry<UUID, Boolean> kv : accountSelectionMap.entrySet()) {
             if (kv.getValue()) {
