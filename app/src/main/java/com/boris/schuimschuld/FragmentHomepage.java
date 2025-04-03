@@ -17,6 +17,8 @@ import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.dataservices.managers.IAccountManager;
+import com.boris.schuimschuld.dataservices.managers.ITransactionManager;
+import com.boris.schuimschuld.dataservices.managers.TransactionFactory;
 import com.boris.schuimschuld.services.PaymentService;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.flexbox.FlexboxLayout;
@@ -248,6 +250,16 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
     @Override
     protected void configureCard(AccountCard accountCard) {
+        ITransactionManager manager = TransactionFactory.create(getContext());
+        ArrayList<UUID> biggestDrinkers = manager.getHighestCount();
+
+        if (biggestDrinkers.size() > 0 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(0)))
+            accountCard.assignCrown(0);
+        else if (biggestDrinkers.size() > 1 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(1)))
+            accountCard.assignCrown(1);
+        else if (biggestDrinkers.size() > 2 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(2)))
+            accountCard.assignCrown(2);
+
         accountCard.setOnLongClickListener(view -> {
             selectionMode = true;
             selectAccount(accountCard);

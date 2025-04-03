@@ -10,8 +10,10 @@ import com.boris.schuimschuld.dataservices.contracts.ContractTransaction;
 import com.boris.schuimschuld.dataservices.DatabaseService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class TransactionManagerSQL implements ITransactionManager {
 
@@ -55,5 +57,26 @@ public class TransactionManagerSQL implements ITransactionManager {
 
         cursor.close();
         return count;
+    }
+
+    public ArrayList<UUID> getHighestCount() {
+        SQLiteDatabase db = databaseServce.getReadableDatabase();
+
+        String QUERY = "SELECT " + ContractTransaction.TransactionEntry.ACCOUNT_UUID + ", SUM(A." + ContractTransaction.TransactionEntry.AMOUNT + ") AS transaction_count" +
+                " FROM " + ContractTransaction.TransactionEntry.TABLE_NAME + " A " +
+                " WHERE A." + ContractTransaction.TransactionEntry.DATE + " > date('now', '-1 month') " +
+                " GROUP BY A."+ ContractTransaction.TransactionEntry.ACCOUNT_UUID +
+                " ORDER BY transaction_count DESC " +
+                " LIMIT 3";
+
+        Cursor cursor = db.rawQuery(QUERY, null);
+
+        ArrayList<UUID> ids = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            ids.add(UUID.fromString(cursor.getString(cursor.getColumnIndexOrThrow(ContractTransaction.TransactionEntry.ACCOUNT_UUID))));
+        }
+
+        cursor.close();
+        return ids;
     }
 }

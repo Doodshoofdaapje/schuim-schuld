@@ -89,7 +89,6 @@ public class AccountManagerSQL implements IAccountManager{
         Cursor cursor = db.rawQuery(QUERY, null);
 
         ArrayList<Account> accounts = new ArrayList<>();
-
         ArrayList<Group> groups = new ArrayList<>();
         String name = "";
         Double balance = 0.0;

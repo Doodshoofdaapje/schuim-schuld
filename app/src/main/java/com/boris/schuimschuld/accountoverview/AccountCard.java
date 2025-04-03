@@ -20,6 +20,7 @@ public class AccountCard extends ConstraintLayout {
     private ImageView plusSign;
     private ImageView minusSign;
     private TextView counter;
+    private ImageView crown;
 
     public AccountCard(Context context, String text, Account account) {
         super(context, null, android.R.style.Widget_Button);
@@ -34,6 +35,7 @@ public class AccountCard extends ConstraintLayout {
         this.plusSign = findViewById(R.id.accountCardPlus);
         this.minusSign = findViewById(R.id.accountCardMinus);
         this.counter = findViewById(R.id.accountCardCounter);
+        this.crown = findViewById(R.id.accountCardCrown);
 
         Bitmap profilePicture = PictureUtil.scalePicture(account.getPicture(), 80, 80).getBitmap();
         picture.setImageBitmap(profilePicture);
@@ -53,6 +55,16 @@ public class AccountCard extends ConstraintLayout {
         minusSign.setVisibility(visibilitySigns);
         counter.setVisibility(visibilitySigns);
         picture.setVisibility(visibilityPicture);
+        crown.setVisibility(visibilityPicture);
+    }
+
+    public void assignCrown(int n) {
+        switch(n) {
+            case 0: crown.setImageResource(R.drawable.crown_gold); break;
+            case 1: crown.setImageResource(R.drawable.crown_silver); break;
+            case 2: crown.setImageResource(R.drawable.crown_bronze); break;
+            default: crown.setImageDrawable(null); break;
+        }
     }
 
     public void setCounter(int value) {

@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/accountCardImage"
         app:srcCompat="@drawable/minus_sign"
-        tools:visibility="visible" />
+        tools:visibility="invisible" />
 
     <ImageView
         android:id="@+id/accountCardPlus"
@@ -60,7 +60,7 @@
         app:layout_constraintStart_toEndOf="@+id/accountCardCounter"
         app:layout_constraintTop_toTopOf="@+id/accountCardImage"
         app:srcCompat="@drawable/plus_sign"
-        tools:visibility="visible" />
+        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/accountCardCounter"
@@ -81,6 +81,16 @@
         app:layout_constraintStart_toStartOf="@+id/accountCardImage"
         app:layout_constraintTop_toTopOf="@+id/accountCardImage"
         tools:text="10"
-        tools:visibility="visible" />
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/accountCardCrown"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="-14dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
