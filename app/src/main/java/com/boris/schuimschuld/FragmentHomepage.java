@@ -2,6 +2,7 @@ package com.boris.schuimschuld;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,11 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private IAccountManager accountManager;
     private MainActivity mainActivity;
     private FlexboxLayout layout;
+    private int initialLoadCount;
 
     private HashMap<UUID, Boolean> accountSelectionMap;
     private HashMap<UUID, Integer> accountCountMap;
+    private ArrayList<Account> accounts;
     private ArrayList<Account> filteredAccounts;
 
     private final String sortInitialValue = "Sorteer";
@@ -49,18 +52,26 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private final String sortDescendingValue = "Z-A";
     private final String filterInitialValue = "Filter";
 
+    private ITransactionManager transactionManager;
+    private ArrayList<UUID> biggestDrinkers;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = com.boris.schuimschuld.databinding.FragmentHomePageBinding.inflate(inflater, container, false);
 
         this.mainActivity = (MainActivity) getActivity();
         this.accountManager = mainActivity.accountManager;
-        this.filteredAccounts = accountManager.getAll();
+        this.accounts = accountManager.getAll();
+        this.filteredAccounts = new ArrayList<>(accounts);
         this.layout = binding.layoutAccountsHome;
+        this.initialLoadCount = 0;
+
+        this.transactionManager = TransactionFactory.create(getContext());
+        this.biggestDrinkers = transactionManager.getHighestCount();
 
         this.accountSelectionMap = new HashMap<>();
         this.accountCountMap = new HashMap<>();
-        for (Account account : accountManager.getAll()) {
+        for (Account account : accounts) {
             accountSelectionMap.put(account.getUuid(), false);
             accountCountMap.put(account.getUuid(), 1);
         }
@@ -87,7 +98,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.spinnerGroupHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadLayout();
+                if (++initialLoadCount > 2) {
+                    loadLayout();
+                }
             }
 
             @Override
@@ -99,7 +112,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.spinnerSortingHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadLayout();
+                if (++initialLoadCount > 2) {
+                    loadLayout();
+                }
             }
 
             @Override
@@ -200,6 +215,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void loadLayout() {
+        Log.e("HomePage", "Loadlayout called");
         layout.removeAllViews();
         filterAccounts();
         sortAccounts();
@@ -210,14 +226,17 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void resetFragment() {
-        // Reload overview
-        loadLayout();
-
         // Reset selection
-        for (Account account : accountManager.getAll()) {
+        for (Account account : accounts) {
             accountSelectionMap.put(account.getUuid(), false);
             accountCountMap.put(account.getUuid(), 1);
         }
+
+        // Update crown
+        biggestDrinkers = transactionManager.getHighestCount();
+
+        // Reload overview
+        loadLayout();
     }
 
     private void filterAccounts() {
@@ -225,11 +244,11 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         filteredAccounts = new ArrayList<>();
 
         if (selectedGroupAsString.equals(filterInitialValue)) {
-            filteredAccounts = accountManager.getAll();
+            filteredAccounts = new ArrayList<>(accounts);
         }
         else {
             Group selectedGroup = Group.valueOf(selectedGroupAsString);
-            for (Account account : accountManager.getAll()) {
+            for (Account account : accounts) {
                 if (account.getGroups().contains(selectedGroup)) {
                     filteredAccounts.add(account);
                 }
@@ -239,9 +258,8 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
     private void sortAccounts() {
         String selectedSortAsString = (String) binding.spinnerSortingHome.getSelectedItem();
-        if (selectedSortAsString.equals(sortInitialValue)) {
-            filterAccounts();
-        } else if (selectedSortAsString.equals(sortAscendingValue)) {
+
+        if (selectedSortAsString.equals(sortAscendingValue)) {
             Collections.sort(filteredAccounts, (a1, a2) -> a1.getName().compareTo(a2.getName()));
         } else if (selectedSortAsString.equals(sortDescendingValue)) {
             Collections.sort(filteredAccounts, (a1, a2) -> a2.getName().compareTo(a1.getName()));
@@ -250,8 +268,6 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
     @Override
     protected void configureCard(AccountCard accountCard) {
-        ITransactionManager manager = TransactionFactory.create(getContext());
-        ArrayList<UUID> biggestDrinkers = manager.getHighestCount();
 
         if (biggestDrinkers.size() > 0 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(0)))
             accountCard.assignCrown(0);

@@ -81,36 +81,31 @@ public class AccountManagerSQL implements IAccountManager{
     public ArrayList<Account> getAll(){
         SQLiteDatabase db = databaseServce.getReadableDatabase();
 
-        String QUERY = "SELECT A." + ContractAccounts.AccountEntry.UUID + ", A." + ContractAccounts.AccountEntry.NAME + ", A." + ContractAccounts.AccountEntry.BALANCE + ", B." + ContractGroups.GroupEntry.GROUP +
+        String QUERY = "SELECT A." + ContractAccounts.AccountEntry.UUID + ", A." + ContractAccounts.AccountEntry.NAME +
+                ", A." + ContractAccounts.AccountEntry.BALANCE + ", GROUP_CONCAT(B." + ContractGroups.GroupEntry.GROUP + ") AS GROUPS " +
                 " FROM " + ContractAccounts.AccountEntry.TABLE_NAME + " A INNER JOIN " + ContractGroups.GroupEntry.TABLE_NAME + " B" +
                 " ON A." + ContractAccounts.AccountEntry.UUID + " = B." + ContractGroups.GroupEntry.ACCOUNT_UUID +
-                " ORDER BY A."+ ContractAccounts.AccountEntry.UUID;
+                " GROUP BY A." + ContractAccounts.AccountEntry.UUID;
 
         Cursor cursor = db.rawQuery(QUERY, null);
-
         ArrayList<Account> accounts = new ArrayList<>();
-        ArrayList<Group> groups = new ArrayList<>();
-        String name = "";
-        Double balance = 0.0;
-        UUID uuid = null;
 
         while (cursor.moveToNext()) {
             String uuidString = cursor.getString(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.UUID));
-            UUID nUuid = UUID.fromString(uuidString);
+            UUID uuid = UUID.fromString(uuidString);
 
-            if (!nUuid.equals(uuid) && uuid != null) {
-                accounts.add(new Account(context, uuid, name, balance, 0.0, groups));
-                groups = new ArrayList<>();
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.NAME));
+            Double balance = cursor.getDouble(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.BALANCE));
+
+            String groupString = cursor.getString(cursor.getColumnIndexOrThrow("GROUPS"));
+            ArrayList<Group> groups = new ArrayList<>();
+
+            if (groupString != null) {
+                for (String group : groupString.split(",")) {
+                    groups.add(Group.valueOf(group));
+                }
             }
-
-            String group = cursor.getString(cursor.getColumnIndexOrThrow(ContractGroups.GroupEntry.GROUP));
-            groups.add(Group.valueOf(group));
-            name = cursor.getString(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.NAME));
-            balance = cursor.getDouble(cursor.getColumnIndexOrThrow(ContractAccounts.AccountEntry.BALANCE));
-            uuid = nUuid;
-        }
-        if (uuid != null) {
-            accounts.add(new Account(context, uuid, name, balance, 0.0, groups)); // Final account
+            accounts.add(new Account(context, uuid, name, balance, 0.0, groups));
         }
         cursor.close();
         return accounts;
