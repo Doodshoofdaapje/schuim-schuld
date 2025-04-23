@@ -43,10 +43,15 @@ import com.boris.schuimschuld.util.PictureUtil;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class AccountDetailFragment extends Fragment {
 
@@ -83,6 +88,11 @@ public class AccountDetailFragment extends Fragment {
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
         binding.textOutputConsumptionCount.setText(String.valueOf(transactionManager.count(account)));
         binding.accountDetailMonthly.setText(String.valueOf(transactionManager.countPastMonth(account)));
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+        String month = monthFormat.format(calendar.getTime());
+        binding.accountDetailLabelMonth.setText("Consumpties: " + month);
 
         String groupString = "";
         for (Group group : account.getGroups()) {
