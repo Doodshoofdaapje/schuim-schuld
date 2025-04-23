@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.dataservices.contracts.ContractTransaction;
 import com.boris.schuimschuld.dataservices.DatabaseService;
+import com.boris.schuimschuld.util.Tuple;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +58,51 @@ public class TransactionManagerSQL implements ITransactionManager {
 
         cursor.close();
         return count;
+    }
+
+    public int countPastMonth(Account account) {
+        SQLiteDatabase db = databaseServce.getReadableDatabase();
+
+        String QUERY = "SELECT SUM(A." + ContractTransaction.TransactionEntry.AMOUNT + ") AS transaction_count" +
+                " FROM " + ContractTransaction.TransactionEntry.TABLE_NAME + " A " +
+                " WHERE A." + ContractTransaction.TransactionEntry.ACCOUNT_UUID + " = ?" +
+                " AND A." + ContractTransaction.TransactionEntry.DATE + " > date('now', '-1 month') " +
+                " GROUP BY A."+ ContractTransaction.TransactionEntry.ACCOUNT_UUID;
+
+        Cursor cursor = db.rawQuery(QUERY, new String[]{account.getUuid().toString()});
+
+        int count = 0;
+        if (cursor.moveToNext()) {
+            count = cursor.getInt(cursor.getColumnIndexOrThrow("transaction_count"));
+        }
+
+        cursor.close();
+        return count;
+    }
+
+    public Tuple<ArrayList<String>, ArrayList<Integer>> countPerMonth(Account account) {
+        SQLiteDatabase db = databaseServce.getReadableDatabase();
+
+        String QUERY = "SELECT substr(A." + ContractTransaction.TransactionEntry.DATE + ", 1, 7) AS month, " +
+                " SUM(A." + ContractTransaction.TransactionEntry.AMOUNT + ") AS transaction_count" +
+                " FROM " + ContractTransaction.TransactionEntry.TABLE_NAME + " A " +
+                " WHERE A." + ContractTransaction.TransactionEntry.ACCOUNT_UUID + " = ?" +
+                " GROUP BY substr(A." + ContractTransaction.TransactionEntry.DATE + ", 1, 7)" +
+                " ORDER BY month";
+
+        Cursor cursor = db.rawQuery(QUERY, new String[]{account.getUuid().toString()});
+
+        ArrayList<String> months = new ArrayList<>();
+        ArrayList<Integer> counts = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String month = cursor.getString(cursor.getColumnIndexOrThrow("month"));
+            months.add(month);
+            int count = cursor.getInt(cursor.getColumnIndexOrThrow("transaction_count"));
+            counts.add(count);
+        }
+
+        cursor.close();
+        return new Tuple<>(months, counts);
     }
 
     public ArrayList<UUID> getHighestCount() {

@@ -1,5 +1,6 @@
 package com.boris.schuimschuld.accountoverview;
 
+import com.boris.schuimschuld.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,9 +16,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
+import com.androidplot.xy.*;
 import com.boris.schuimschuld.dataservices.managers.ITransactionManager;
 import com.boris.schuimschuld.dataservices.managers.TransactionFactory;
-import com.boris.schuimschuld.dataservices.managers.TransactionManagerSQL;
+import com.boris.schuimschuld.util.Tuple;
 import com.yalantis.ucrop.UCrop;
 
 import android.util.Log;
@@ -30,6 +35,14 @@ import android.widget.Toast;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.util.PictureUtil;
+
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class AccountDetailFragment extends Fragment {
 
@@ -65,6 +78,7 @@ public class AccountDetailFragment extends Fragment {
         binding.textOutputNameDetail.setText(account.getName());
         binding.textOutputBalanceDetail.setText("€ " + account.getBalance().toString());
         binding.textOutputConsumptionCount.setText(String.valueOf(transactionManager.count(account)));
+        binding.accountDetailMonthly.setText(String.valueOf(transactionManager.countPastMonth(account)));
 
         String groupString = "";
         for (Group group : account.getGroups()) {
@@ -76,6 +90,9 @@ public class AccountDetailFragment extends Fragment {
         ImageView profilePictureView = binding.imageOutputAccountDetail;
         profilePictureView.setImageURI(pfpUri);
         PictureUtil.roundPicture(profilePictureView);
+
+        // Populate Chart
+        createPlot(transactionManager);
 
         // Event Handlers
         binding.buttonReturnDetail2.setOnClickListener(view1 ->
@@ -92,6 +109,52 @@ public class AccountDetailFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> imageCropIntentHandler(result)
         );
+    }
+
+    private void createPlot(ITransactionManager transactionManager) {
+        XYPlot plot = binding.accountDetailChart;
+        Tuple<ArrayList<String>, ArrayList<Integer>> data = transactionManager.countPerMonth(account);
+
+        XYSeries series = new SimpleXYSeries(data._y(), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Maand");
+        LineAndPointFormatter seriesFormat =
+                new LineAndPointFormatter(getContext(), R.drawable.line_point_formatter_with_labels);
+
+        plot.addSeries(series, seriesFormat);
+        plot.getLegend().setVisible(false);
+
+        plot.setPlotPadding(10, 10, 10, 10);
+        plot.getGraph().setMargins(30, 20, 30, 30);
+
+        plot.setDomainStep(StepMode.INCREMENT_BY_VAL, 1);
+        plot.getGraph().getLineLabelInsets().setLeft(-20f);
+        plot.getGraph().getLineLabelInsets().setBottom(-20f);
+        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                int i = Math.round(((Number) obj).floatValue());
+                return toAppendTo.append(data._x().get(i));
+            }
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+            }
+        });
+        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                int i = Math.round(((Number) obj).floatValue());
+                return toAppendTo.append(i);
+            }
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+            }
+        });
+        plot.setRangeBoundaries(0, Collections.max(data._y()), BoundaryMode.FIXED);
+        plot.setDomainBoundaries(0, 5, BoundaryMode.FIXED);
+        PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.NONE);
+        //plot.getOuterLimits().set(0, data._x().size() - 1, 0, Collections.max(data._y()));
+
     }
 
     private void createChangeImageAlert() {
