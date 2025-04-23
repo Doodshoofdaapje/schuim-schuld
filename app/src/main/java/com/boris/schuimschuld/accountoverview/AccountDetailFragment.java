@@ -130,7 +130,7 @@ public class AccountDetailFragment extends Fragment {
         plot.getLegend().setVisible(false);
         plot.setPlotPadding(10, 10, 10, 10);
         plot.getGraph().setMargins(50, 20, 50, 30);
-        
+
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, 1);
         plot.getGraph().getLineLabelInsets().setLeft(-20f);
         plot.getGraph().getLineLabelInsets().setBottom(-20f);

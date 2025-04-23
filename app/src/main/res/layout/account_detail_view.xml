@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey"
@@ -39,7 +40,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            android:text="Lifetime Consumpties"
+            android:text="Consumpties :Totaal"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +52,7 @@
         android:id="@+id/buttonReturnDetail2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@color/soft_green"
         android:text="Terug"
         android:textSize="20sp"
@@ -97,22 +98,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageOutputAccountDetail" />
 
-    <com.androidplot.xy.XYPlot
-        android:id="@+id/accountDetailChart"
-        android:background="@drawable/bg_account_detail"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_account_detail"
         app:layout_constraintBottom_toBottomOf="@+id/imageOutputAccountDetail"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/imageOutputAccountDetail"
-        app:layout_constraintTop_toTopOf="@+id/imageOutputAccountDetail"
-        app:lineLabelRotationBottom="0"
-        app:lineLabels="left|bottom"
-        app:rangeTitle="Consumpties"
-        app:title="Consumpties per maand"
-        app:titleTextSize="16sp" />
+        app:layout_constraintTop_toTopOf="@+id/imageOutputAccountDetail">
+
+        <com.androidplot.xy.XYPlot
+            android:id="@+id/accountDetailChart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_account_detail"
+            app:backgroundColor="@color/light_grey"
+            app:borderColor="@color/light_grey"
+            app:borderThickness="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineLabelRotationBottom="0"
+            app:lineLabels="left|bottom"
+            app:rangeTitle="Consumpties"
+            app:title="Consumpties per maand"
+            app:titleTextSize="16sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout5"
@@ -184,7 +200,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            android:text="Maand Consumpties"
+            android:text="Consumpties: Maand"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
