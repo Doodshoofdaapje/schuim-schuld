@@ -99,12 +99,11 @@
 
     <com.androidplot.xy.XYPlot
         android:id="@+id/accountDetailChart"
-        style="@style/CardView.Dark"
+        android:background="@drawable/bg_account_detail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_account_detail"
         app:layout_constraintBottom_toBottomOf="@+id/imageOutputAccountDetail"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/imageOutputAccountDetail"
