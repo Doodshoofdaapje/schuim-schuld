@@ -33,13 +33,17 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
     private final String sortAscendingValue = "L-H";
     private final String sortDescendingValue = "H-L";
 
+    private int initialLoadCount;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        binding = com.boris.schuimschuld.databinding.FragmentEditOverviewBinding.inflate(inflater, container, false);
-        mainActivity = (MainActivity) getActivity();
-        layout = binding.layoutAccountsEdit;
+        this.binding = com.boris.schuimschuld.databinding.FragmentEditOverviewBinding.inflate(inflater, container, false);
+        this.mainActivity = (MainActivity) getActivity();
+        this.layout = binding.layoutAccountsEdit;
+        this.initialLoadCount = 0;
+
         return binding.getRoot();
     }
 
@@ -59,7 +63,9 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
         binding.spinnerSortingEdit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadLayout();
+                if (++initialLoadCount > 1) {
+                    loadLayout();
+                }
             }
 
             @Override
@@ -98,7 +104,7 @@ public class FragmentEditOverview extends BaseAccountOverviewFragment {
 
     private void loadLayout() {
         layout.removeAllViews();
-        ArrayList<Account> accounts = mainActivity.accountRegister.getAccounts();
+        ArrayList<Account> accounts = mainActivity.accountManager.getAll();
         sortAccounts(accounts);
         ArrayList<AccountCard> cards = createCards(accounts);
         for (AccountCard card : cards) {

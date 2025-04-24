@@ -8,10 +8,11 @@
     android:backgroundTint="@color/dark_grey">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="130dp"
         android:layout_marginStart="32dp"
-        android:background="@drawable/bg_account_detail_test"
+        android:background="@drawable/bg_account_detail"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout5"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout5">
 
@@ -39,7 +40,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            android:text="Lifetime Consumpties"
+            android:text="Consumpties :Totaal"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +52,7 @@
         android:id="@+id/buttonReturnDetail2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@color/soft_green"
         android:text="Terug"
         android:textSize="20sp"
@@ -63,9 +64,9 @@
         android:id="@+id/imageOutputAccountDetail"
         android:layout_width="230dp"
         android:layout_height="230dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
         app:layout_constraintTop_toBottomOf="@+id/textOutputNameDetail"
         app:srcCompat="@drawable/placeholder_pfp" />
 
@@ -98,11 +99,43 @@
         app:layout_constraintTop_toBottomOf="@+id/imageOutputAccountDetail" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/bg_account_detail"
+        app:layout_constraintBottom_toBottomOf="@+id/imageOutputAccountDetail"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toEndOf="@+id/imageOutputAccountDetail"
+        app:layout_constraintTop_toTopOf="@+id/imageOutputAccountDetail">
+
+        <com.androidplot.xy.XYPlot
+            android:id="@+id/accountDetailChart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_account_detail"
+            app:backgroundColor="@color/light_grey"
+            app:borderColor="@color/light_grey"
+            app:borderThickness="-1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineLabelRotationBottom="0"
+            app:lineLabels="left|bottom"
+            app:rangeTitle="Consumpties"
+            app:title="Consumpties per maand"
+            app:titleTextSize="16sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout5"
         android:layout_width="350dp"
         android:layout_height="130dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_account_detail_test"
+        android:background="@drawable/bg_account_detail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textOutputGroupDetail">
@@ -133,5 +166,45 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/bg_account_detail"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout5"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout5">
+
+        <TextView
+            android:id="@+id/accountDetailMonthly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false"
+
+            android:text="30"
+            android:textColor="@color/white"
+            android:textSize="60sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/accountDetailLabelMonth" />
+
+        <TextView
+            android:id="@+id/accountDetailLabelMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="Consumpties: Maand"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@
   "accounts": {
     "accounts": [
       {
+      "uuid": "d6c4aef1-9fe4-43eb-bb6e-62db2fc7fa7b",
       "name": "dummy",
       "balance": 0.0,
       "groups": ["Overig"],

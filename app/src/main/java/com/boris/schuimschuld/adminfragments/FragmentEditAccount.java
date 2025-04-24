@@ -130,7 +130,7 @@ public class FragmentEditAccount extends Fragment {
             account.setBalance(newBalance);
             account.setConsumptionCount(newConsumptionCount);
             account.setGroups(selectedGroups);
-            ((MainActivity) getActivity()).accountRegister.save();
+            ((MainActivity) getActivity()).accountManager.update(account);
             NavHostFragment.findNavController(FragmentEditAccount.this).popBackStack();
 
         } catch (NumberFormatException exception) {

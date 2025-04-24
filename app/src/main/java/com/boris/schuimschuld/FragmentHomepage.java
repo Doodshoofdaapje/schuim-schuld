@@ -2,6 +2,7 @@ package com.boris.schuimschuld;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.boris.schuimschuld.account.Account;
-import com.boris.schuimschuld.account.AccountRegister;
 import com.boris.schuimschuld.account.Group;
 import com.boris.schuimschuld.accountoverview.AccountCard;
 import com.boris.schuimschuld.accountoverview.BaseAccountOverviewFragment;
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
+import com.boris.schuimschuld.dataservices.managers.IAccountManager;
+import com.boris.schuimschuld.dataservices.managers.ITransactionManager;
+import com.boris.schuimschuld.dataservices.managers.TransactionFactory;
+import com.boris.schuimschuld.services.PaymentService;
 import com.boris.schuimschuld.util.DynamicSpinnerFiller;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -25,17 +29,22 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class FragmentHomepage extends BaseAccountOverviewFragment implements IOnBackPressed {
 
     private com.boris.schuimschuld.databinding.FragmentHomePageBinding binding;
     private boolean selectionMode = false;
-    private AccountRegister register;
+    private IAccountManager accountManager;
     private MainActivity mainActivity;
     private FlexboxLayout layout;
+    private int initialLoadCount;
 
-    private Boolean[] selectionStates;
+    private HashMap<UUID, Boolean> accountSelectionMap;
+    private HashMap<UUID, Integer> accountCountMap;
+    private ArrayList<Account> accounts;
     private ArrayList<Account> filteredAccounts;
 
     private final String sortInitialValue = "Sorteer";
@@ -43,17 +52,29 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private final String sortDescendingValue = "Z-A";
     private final String filterInitialValue = "Filter";
 
+    private ITransactionManager transactionManager;
+    private ArrayList<UUID> biggestDrinkers;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = com.boris.schuimschuld.databinding.FragmentHomePageBinding.inflate(inflater, container, false);
 
         this.mainActivity = (MainActivity) getActivity();
-        this.register = mainActivity.accountRegister;
-        this.filteredAccounts = register.getAccounts();
+        this.accountManager = mainActivity.accountManager;
+        this.accounts = accountManager.getAll();
+        this.filteredAccounts = new ArrayList<>(accounts);
         this.layout = binding.layoutAccountsHome;
+        this.initialLoadCount = 0;
 
-        this.selectionStates = new Boolean[register.size()];
-        Arrays.fill(selectionStates, Boolean.FALSE);
+        this.transactionManager = TransactionFactory.create(getContext());
+        this.biggestDrinkers = transactionManager.getHighestCount();
+
+        this.accountSelectionMap = new HashMap<>();
+        this.accountCountMap = new HashMap<>();
+        for (Account account : accounts) {
+            accountSelectionMap.put(account.getUuid(), false);
+            accountCountMap.put(account.getUuid(), 1);
+        }
 
         return binding.getRoot();
     }
@@ -77,7 +98,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.spinnerGroupHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadLayout();
+                if (++initialLoadCount > 2) {
+                    loadLayout();
+                }
             }
 
             @Override
@@ -89,7 +112,9 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.spinnerSortingHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                loadLayout();
+                if (++initialLoadCount > 2) {
+                    loadLayout();
+                }
             }
 
             @Override
@@ -115,11 +140,12 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     private void selectAccount(AccountCard accountCard) {
         // Select Account
         accountCard.setSelected(!accountCard.isSelected());
-        selectionStates[register.getAccounts().indexOf(accountCard.getAccount())] = !selectionStates[register.getAccounts().indexOf(accountCard.getAccount())];
+        UUID accountUuid = accountCard.getAccount().getUuid();
+        accountSelectionMap.put(accountUuid, !accountSelectionMap.get(accountUuid));
 
         // Update selection count
         int count = 0;
-        for (Boolean selection : selectionStates) {
+        for (Boolean selection : accountSelectionMap.values()) {
             if (selection == true) {
                 count +=1;
             }
@@ -127,12 +153,23 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         binding.selectionCountView.setText(String.valueOf(count));
     }
 
+    private void updateCounterAccount(AccountCard accountCard, int difference) {
+        UUID accountUuid = accountCard.getAccount().getUuid();
+
+        if (accountCountMap.get(accountUuid) + difference >= 0) {
+            accountCountMap.put(accountUuid, accountCountMap.get(accountUuid) + difference);
+        }
+
+        accountCard.setCounter(accountCountMap.get(accountUuid));
+    }
+
     private void chargeSelectedAccounts(MainActivity activity) {
-        ArrayList<Account> accounts = register.getAccounts();
-        for (int i = 0; i< selectionStates.length; i++) {
-            if(selectionStates[i]) {
-                accounts.get(i).pay();
-                register.save();
+        PaymentService paymentService = new PaymentService(getContext(), accountManager);
+
+        for (Map.Entry<UUID, Boolean> kv : accountSelectionMap.entrySet()) {
+            if (kv.getValue()) {
+                int drinkCount = accountCountMap.get(kv.getKey());
+                paymentService.chargeAccount(accountManager.get(kv.getKey()), drinkCount);
             }
         }
 
@@ -178,6 +215,7 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void loadLayout() {
+        Log.e("HomePage", "Loadlayout called");
         layout.removeAllViews();
         filterAccounts();
         sortAccounts();
@@ -188,11 +226,17 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
     }
 
     private void resetFragment() {
+        // Reset selection
+        for (Account account : accounts) {
+            accountSelectionMap.put(account.getUuid(), false);
+            accountCountMap.put(account.getUuid(), 1);
+        }
+
+        // Update crown
+        biggestDrinkers = transactionManager.getHighestCount();
+
         // Reload overview
         loadLayout();
-
-        // Reset selection
-        Arrays.fill(selectionStates, Boolean.FALSE);
     }
 
     private void filterAccounts() {
@@ -200,11 +244,11 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
         filteredAccounts = new ArrayList<>();
 
         if (selectedGroupAsString.equals(filterInitialValue)) {
-            filteredAccounts = register.getAccounts();
+            filteredAccounts = new ArrayList<>(accounts);
         }
         else {
             Group selectedGroup = Group.valueOf(selectedGroupAsString);
-            for (Account account : register.getAccounts()) {
+            for (Account account : accounts) {
                 if (account.getGroups().contains(selectedGroup)) {
                     filteredAccounts.add(account);
                 }
@@ -214,9 +258,8 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
     private void sortAccounts() {
         String selectedSortAsString = (String) binding.spinnerSortingHome.getSelectedItem();
-        if (selectedSortAsString.equals(sortInitialValue)) {
-            filterAccounts();
-        } else if (selectedSortAsString.equals(sortAscendingValue)) {
+
+        if (selectedSortAsString.equals(sortAscendingValue)) {
             Collections.sort(filteredAccounts, (a1, a2) -> a1.getName().compareTo(a2.getName()));
         } else if (selectedSortAsString.equals(sortDescendingValue)) {
             Collections.sort(filteredAccounts, (a1, a2) -> a2.getName().compareTo(a1.getName()));
@@ -225,6 +268,14 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
 
     @Override
     protected void configureCard(AccountCard accountCard) {
+
+        if (biggestDrinkers.size() > 0 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(0)))
+            accountCard.assignCrown(0);
+        else if (biggestDrinkers.size() > 1 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(1)))
+            accountCard.assignCrown(1);
+        else if (biggestDrinkers.size() > 2 && accountCard.getAccount().getUuid().equals(biggestDrinkers.get(2)))
+            accountCard.assignCrown(2);
+
         accountCard.setOnLongClickListener(view -> {
             selectionMode = true;
             selectAccount(accountCard);
@@ -243,6 +294,14 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
                 NavHostFragment.findNavController(this)
                         .navigate(R.id.action_fragmentHomePageBinding2_to_accountDetailFragmentNew, bundle);
             }
+        });
+
+        accountCard.findViewById(R.id.accountCardPlus).setOnClickListener(view -> {
+            updateCounterAccount(accountCard, 1);
+        });
+
+        accountCard.findViewById(R.id.accountCardMinus).setOnClickListener(view -> {
+            updateCounterAccount(accountCard, -1);
         });
     }
 }

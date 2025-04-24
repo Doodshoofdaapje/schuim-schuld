@@ -11,11 +11,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
 import com.boris.schuimschuld.util.PictureUtil;
-import com.google.android.flexbox.FlexboxLayout;
 
 public class AccountCard extends ConstraintLayout {
 
     private Account account;
+    private TextView name;
+    private ImageView picture;
+    private ImageView plusSign;
+    private ImageView minusSign;
+    private TextView counter;
+    private ImageView crown;
 
     public AccountCard(Context context, String text, Account account) {
         super(context, null, android.R.style.Widget_Button);
@@ -25,16 +30,45 @@ public class AccountCard extends ConstraintLayout {
         this.setMinimumWidth(300);
 
         this.account = account;
-
-        TextView textOutputName = findViewById(R.id.textOutputNameaccountCard);
-        ImageView imageOutputAccount = findViewById(R.id.imageOutputAccountCard);
-
-        textOutputName.setText(account.getName());
+        this.name = findViewById(R.id.accountCardName);
+        this.picture = findViewById(R.id.accountCardImage);
+        this.plusSign = findViewById(R.id.accountCardPlus);
+        this.minusSign = findViewById(R.id.accountCardMinus);
+        this.counter = findViewById(R.id.accountCardCounter);
+        this.crown = findViewById(R.id.accountCardCrown);
 
         Bitmap profilePicture = PictureUtil.scalePicture(account.getPicture(), 80, 80).getBitmap();
-        imageOutputAccount.setImageBitmap(profilePicture);
+        picture.setImageBitmap(profilePicture);
+        name.setText(account.getName());
 
-        PictureUtil.roundPicture(imageOutputAccount);
+        PictureUtil.roundPicture(picture);
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected); // Call the original behavior
+
+        int visibilitySigns = selected ? VISIBLE : INVISIBLE;
+        int visibilityPicture = selected ? INVISIBLE : VISIBLE;
+
+        plusSign.setVisibility(visibilitySigns);
+        minusSign.setVisibility(visibilitySigns);
+        counter.setVisibility(visibilitySigns);
+        picture.setVisibility(visibilityPicture);
+        crown.setVisibility(visibilityPicture);
+    }
+
+    public void assignCrown(int n) {
+        switch(n) {
+            case 0: crown.setImageResource(R.drawable.crown_gold); break;
+            case 1: crown.setImageResource(R.drawable.crown_silver); break;
+            case 2: crown.setImageResource(R.drawable.crown_bronze); break;
+            default: crown.setImageDrawable(null); break;
+        }
+    }
+
+    public void setCounter(int value) {
+        counter.setText(String.valueOf(value));
     }
 
     public void setColor(int index) {

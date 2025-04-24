@@ -12,6 +12,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.boris.schuimschuld.BuildConfig;
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.databinding.FragmentAdminPanelBinding;
 
@@ -44,76 +45,62 @@ private FragmentAdminPanelBinding binding;
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentAdminPanel.this)
-                                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentLogIn);
+        binding.buttonLogout.setOnClickListener(view1 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                        .navigate(R.id.action_fragmentAdminOverview2_to_fragmentLogIn));
+
+        binding.buttonNewAccountAdminPanel.setOnClickListener(view12 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentNewAccount));
+
+        binding.buttonEditAccountAdminPanel.setOnClickListener(view13 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentEditAccount));
+
+        binding.buttonRemoveAccountAdminPanel.setOnClickListener(view14 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentDeleteAccount));
+
+        binding.buttonChangeCredentialsAdminPanel.setOnClickListener(view15 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentChangePassword));
+
+        binding.buttonBackup.setOnClickListener(view16 -> {
+            File file;
+            String backupFileName;
+
+            // Get date
+            Date currentTime = Calendar.getInstance().getTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = dateFormat.format(currentTime);
+
+            if (BuildConfig.DB_SQL) {
+                file = getContext().getDatabasePath("database_schuimschuld.db");
+                backupFileName = "accounts_" + formattedDate + ".db";
+            } else {
+                file = new File(getContext().getFilesDir(), "accounts.json");
+                backupFileName = "accounts_" + formattedDate + ".json";
             }
-        });
 
-        binding.buttonNewAccountAdminPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentAdminPanel.this)
-                        .navigate(R.id.action_fragmentAdminOverview2_to_fragmentNewAccount);
+            File backupFile = new File(getContext().getFilesDir(), backupFileName);
+
+            // Copy file contents
+            try {
+                FileChannel src = new FileInputStream(file).getChannel();
+                FileChannel dest = new FileOutputStream(backupFile).getChannel();
+                dest.transferFrom(src, 0, src.size());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
             }
-        });
-        binding.buttonEditAccountAdminPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentAdminPanel.this)
-                        .navigate(R.id.action_fragmentAdminOverview2_to_fragmentEditAccount);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            if (BuildConfig.DB_SQL) {
+                intent.setType("application/db");
+            } else {
+                intent.setType("application/json");
             }
-        });
-        binding.buttonRemoveAccountAdminPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentAdminPanel.this)
-                        .navigate(R.id.action_fragmentAdminOverview2_to_fragmentDeleteAccount);
-            }
-        });
 
-        binding.buttonChangeCredentialsAdminPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FragmentAdminPanel.this)
-                        .navigate(R.id.action_fragmentAdminOverview2_to_fragmentChangePassword);
-            }
-        });
+            Uri fileUri = FileProvider.getUriForFile(getContext(), "com.boris.schuimschuld.fileprovider", backupFile);
+            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            intent.setPackage("com.google.android.apps.docs"); // Opens Google Drive directly
 
-        binding.buttonBackup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                File file = new File(getContext().getFilesDir(), "accounts.json");
-
-                // Get date
-                Date currentTime = Calendar.getInstance().getTime();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String formattedDate = dateFormat.format(currentTime);
-
-                // Create backup file
-                String backupFileName = "accounts_" + formattedDate + ".json";
-                File backupFile = new File(getContext().getFilesDir(), backupFileName);
-
-                // Copy file contents
-                try {
-                    FileChannel src = new FileInputStream(file).getChannel();
-                    FileChannel dest = new FileOutputStream(backupFile).getChannel();
-                    dest.transferFrom(src, 0, src.size());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("application/json"); // Change this to your file's type
-                Uri fileUri = FileProvider.getUriForFile(getContext(), "com.boris.schuimschuld.fileprovider", backupFile);
-                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                intent.setPackage("com.google.android.apps.docs"); // Opens Google Drive directly
-
-                startActivity(Intent.createChooser(intent, "Save file to"));
-            }
+            startActivity(Intent.createChooser(intent, "Save file to"));
         });
     }
 

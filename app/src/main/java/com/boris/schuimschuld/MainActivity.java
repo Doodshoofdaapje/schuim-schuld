@@ -2,18 +2,18 @@ package com.boris.schuimschuld;
 
 import android.os.Bundle;
 
-import com.boris.schuimschuld.account.AccountRegister;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.boris.schuimschuld.accountoverview.IOnBackPressed;
 import com.boris.schuimschuld.databinding.ActivityMainBinding;
+import com.boris.schuimschuld.dataservices.managers.AccountFactory;
+import com.boris.schuimschuld.dataservices.managers.AccountManagerSQL;
+import com.boris.schuimschuld.dataservices.managers.IAccountManager;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    public AccountRegister accountRegister;
+    public IAccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.accountRegister = new AccountRegister(this);
+        this.accountManager = AccountFactory.create(this);
 
         super.onCreate(savedInstanceState);
 
@@ -82,5 +82,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (accountManager instanceof AccountManagerSQL) {
+            accountManager.close();
+        }
+        super.onDestroy();
     }
 }
