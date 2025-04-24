@@ -143,7 +143,7 @@ public class AccountDetailFragment extends Fragment {
 
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, 1);
         plot.getGraph().getLineLabelInsets().setLeft(-20f);
-        plot.getGraph().getLineLabelInsets().setBottom(-20f);
+        plot.getGraph().getLineLabelInsets().setBottom(-30f);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
