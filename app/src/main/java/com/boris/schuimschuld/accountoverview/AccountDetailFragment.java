@@ -169,12 +169,16 @@ public class AccountDetailFragment extends Fragment {
 
         // Set zoom restrictions and starting point
         int windowSize = 5;
+        int yScale = 0;
+        if (!data._y().isEmpty()) {
+            yScale = Collections.max(data._y());
+        }
         int dataSize = data._x().size();
         int startDomain = Math.max(0, dataSize - windowSize);
         int endDomain = startDomain + windowSize - 1;
-        plot.setRangeBoundaries(0, Collections.max(data._y()), BoundaryMode.FIXED);
+        plot.setRangeBoundaries(0, yScale, BoundaryMode.FIXED);
         plot.setDomainBoundaries(startDomain, endDomain, BoundaryMode.FIXED);
-        plot.getOuterLimits().set(0, data._x().size() - 1, 0, Collections.max(data._y()));
+        plot.getOuterLimits().set(0, data._x().size() - 1, 0, yScale);
         PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.NONE);
 
     }

@@ -20,19 +20,21 @@ public class Account implements Serializable {
     private Double consumptionCount;
     private ArrayList<Group> groups;
     private transient Bitmap profilePicture;
+    private transient Context context;
 
     public Account(Context context, String name, Double balance, Double consumptionCount, ArrayList<Group> groups) {
         this(context, UUID.randomUUID(), name, balance, consumptionCount, groups);
     }
 
     public Account(Context context, UUID uuid, String name, Double balance, Double consumptionCount, ArrayList<Group> groups) {
+        this.context = context;
         this.uuid = uuid;
         this.name = name;
         this.balance = balance;
         this.consumptionCount = consumptionCount;
         this.groups = groups;
         this.imageDataService = new AccountImageDataService(uuid.toString());
-        this.profilePicture = imageDataService.load(context);
+        this.profilePicture = null;
     }
 
     public void setName(String newName) {
@@ -65,8 +67,9 @@ public class Account implements Serializable {
     public ArrayList<Group> getGroups() {
         return this.groups;
     }
+
     public Bitmap getPicture() {
-        return profilePicture;
+        return imageDataService.load(context);
     }
     public Uri getPictureURI(Context context) {
         return imageDataService.getURI(context);

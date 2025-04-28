@@ -87,6 +87,7 @@ public class TransactionManagerSQL implements ITransactionManager {
                 " SUM(A." + ContractTransaction.TransactionEntry.AMOUNT + ") AS transaction_count" +
                 " FROM " + ContractTransaction.TransactionEntry.TABLE_NAME + " A " +
                 " WHERE A." + ContractTransaction.TransactionEntry.ACCOUNT_UUID + " = ?" +
+                " AND A." + ContractTransaction.TransactionEntry.DATE + " > date('2025-04-27') " +
                 " GROUP BY substr(A." + ContractTransaction.TransactionEntry.DATE + ", 1, 7)" +
                 " ORDER BY month";
 
