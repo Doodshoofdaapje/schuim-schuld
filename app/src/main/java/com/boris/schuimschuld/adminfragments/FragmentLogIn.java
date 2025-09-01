@@ -47,11 +47,11 @@ public class FragmentLogIn extends Fragment {
                     String password = binding.textInputPasswordLogIn.getText().toString();
 
                     // Get credentials from file, or set default values if this file does not exists already
-                    JsonFileHandler writerReader = new JsonFileHandler(getContext());
-                    if (writerReader.createFile(CREDENTIALS_FILE)) {
-                        writerReader.copyFromRaw(CREDENTIALS_FILE, R.raw.config, CREDENTIALS_KEY);
+                    JsonFileHandler fileHandler = new JsonFileHandler(getContext());
+                    if (fileHandler.createFile(CREDENTIALS_FILE)) {
+                        fileHandler.copyFromRaw(CREDENTIALS_FILE, R.raw.config, CREDENTIALS_KEY);
                     }
-                    JSONObject storedCredentialsAsJson = writerReader.readFileFromInternal(CREDENTIALS_FILE);
+                    JSONObject storedCredentialsAsJson = fileHandler.readFileFromInternal(CREDENTIALS_FILE);
                     String storedUsername = storedCredentialsAsJson.get(USERNAME_KEY).toString();
                     String storedPassword = storedCredentialsAsJson.get(PASSWORD_KEY).toString();
 

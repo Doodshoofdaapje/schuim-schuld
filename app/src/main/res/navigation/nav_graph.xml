@@ -76,6 +76,6 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentChangePassword"
-        android:name="com.boris.schuimschuld.adminfragments.FragmentChangePassword"
+        android:name="com.boris.schuimschuld.adminfragments.FragmentChangeCredentials"
         android:label="FragmentChangePassword" />
 </navigation>
