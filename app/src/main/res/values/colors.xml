@@ -25,5 +25,7 @@
     <color name="smokey_black">#1B1A1A</color>
     <color name="dark_white">#e8e8e8</color>
     <color name="light_soft_green">#b4fa61</color>
+    <color name="Cyan">#38BDF8</color>
+    <color name="Violet">#8B5CF6</color>
 
 </resources>

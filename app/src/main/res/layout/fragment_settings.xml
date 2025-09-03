@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_grey">
+
+    <Button
+        android:id="@+id/buttonConfirmSettings"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/button_color_green"
+        android:text="Wijzigen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/consumptiomPrice" />
+
+    <Button
+        android:id="@+id/buttonCancelSettings"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_color_red"
+        android:text="Annuleren"
+        app:layout_constraintEnd_toEndOf="@+id/buttonConfirmSettings"
+        app:layout_constraintStart_toStartOf="@+id/buttonConfirmSettings"
+        app:layout_constraintTop_toBottomOf="@+id/buttonConfirmSettings" />
+
+    <EditText
+        android:id="@+id/consumptiomPrice"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:background="@color/light_grey"
+        android:ems="10"
+        android:hint="Consumptieprijs"
+        android:padding="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Consumptie prijs (euros)"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/consumptiomPrice"
+        app:layout_constraintStart_toStartOf="@+id/consumptiomPrice" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

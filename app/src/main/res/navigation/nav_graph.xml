@@ -38,6 +38,9 @@
             app:destination="@id/fragmentHomePageBinding2"
             app:popUpTo="@id/fragmentAdminOverview2"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_fragmentAdminOverview2_to_fragmentSettings"
+            app:destination="@id/fragmentSettings" />
     </fragment>
     <fragment
         android:id="@+id/fragmentNewAccount"
@@ -78,4 +81,8 @@
         android:id="@+id/fragmentChangePassword"
         android:name="com.boris.schuimschuld.adminfragments.FragmentChangeCredentials"
         android:label="FragmentChangePassword" />
+    <fragment
+        android:id="@+id/fragmentSettings"
+        android:name="com.boris.schuimschuld.adminfragments.FragmentSettings"
+        android:label="FragmentSettings" />
 </navigation>

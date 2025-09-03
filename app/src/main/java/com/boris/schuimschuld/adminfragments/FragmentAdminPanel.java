@@ -60,6 +60,9 @@ private FragmentAdminPanelBinding binding;
         binding.buttonChangeCredentialsAdminPanel.setOnClickListener(view15 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
                 .navigate(R.id.action_fragmentAdminOverview2_to_fragmentChangePassword));
 
+        binding.buttonSettings.setOnClickListener(view17 -> NavHostFragment.findNavController(FragmentAdminPanel.this)
+                .navigate(R.id.action_fragmentAdminOverview2_to_fragmentSettings));
+
         binding.buttonBackup.setOnClickListener(view16 -> {
             File file;
             String backupFileName;
