@@ -95,4 +95,15 @@
         app:layout_constraintEnd_toEndOf="@+id/buttonChangeCredentialsAdminPanel"
         app:layout_constraintStart_toStartOf="@+id/buttonChangeCredentialsAdminPanel" />
 
+    <Button
+        android:id="@+id/restoreBackupButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/button_color_red"
+        android:text="Backup Herstellen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
