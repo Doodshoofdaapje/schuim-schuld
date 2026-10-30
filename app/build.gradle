@@ -11,7 +11,7 @@ android {
         minSdk 22
         targetSdk 32
         versionCode 7
-        versionName "4.5"
+        versionName "4.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "boolean", "DB_SQL", "true"

@@ -1,6 +1,7 @@
 package com.boris.schuimschuld;
 
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -189,6 +190,8 @@ public class FragmentHomepage extends BaseAccountOverviewFragment implements IOn
                 chargeSelectedAccounts(activity);
                 Snackbar message = Snackbar.make(view, "Betaling succesvol!", BaseTransientBottomBar.LENGTH_SHORT);
                 message.show();
+                MediaPlayer song = MediaPlayer.create(activity, R.raw.rene_yeah);
+                song.start();
             }
         });
 
