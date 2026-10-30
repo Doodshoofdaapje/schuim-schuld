@@ -13,5 +13,5 @@ public interface ITransactionManager {
     int countPastMonth(Account account);
     Tuple<ArrayList<String>, ArrayList<Integer>> countPerMonth(Account account);
     ArrayList<UUID> getHighestCount();
-
+    ArrayList<Integer> getAccountAchievements(Account account);
 }

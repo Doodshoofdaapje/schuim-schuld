@@ -34,4 +34,6 @@ public class TransactionManagerJson implements ITransactionManager{
     public ArrayList<UUID> getHighestCount() {
         return null;
     }
+
+    public ArrayList<Integer> getAccountAchievements(Account account) {return new ArrayList<>();}
 }

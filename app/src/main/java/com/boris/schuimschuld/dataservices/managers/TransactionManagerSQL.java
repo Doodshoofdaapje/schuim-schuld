@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class TransactionManagerSQL implements ITransactionManager {
@@ -125,5 +127,63 @@ public class TransactionManagerSQL implements ITransactionManager {
 
         cursor.close();
         return ids;
+    }
+
+    public ArrayList<Integer> getAccountAchievements(Account account) {
+        SQLiteDatabase db = databaseServce.getReadableDatabase();
+
+        String QUERY =
+                "WITH monthly AS (" +
+                        "   SELECT " +
+                        "       " + ContractTransaction.TransactionEntry.ACCOUNT_UUID + " AS account_uuid, " +
+                        "       substr(" + ContractTransaction.TransactionEntry.DATE + ", 1, 7) AS month, " +
+                        "       SUM(" + ContractTransaction.TransactionEntry.AMOUNT + ") AS total " +
+                        "   FROM " + ContractTransaction.TransactionEntry.TABLE_NAME +
+                        "   GROUP BY account_uuid, month" +
+                        "), rankings AS (" +
+                        "   SELECT " +
+                        "       current.account_uuid, " +
+                        "       current.month, " +
+                        "       (" +
+                        "           SELECT COUNT(*) " +
+                        "           FROM monthly other " +
+                        "           WHERE other.month = current.month " +
+                        "           AND other.total > current.total" +
+                        "       ) AS position " +
+                        "   FROM monthly current" +
+                        ") " +
+                        "SELECT position, COUNT(*) AS achievements " +
+                        "FROM rankings " +
+                        "WHERE account_uuid = ? " +
+                        "AND position < 3 " +
+                        "GROUP BY position " +
+                        "ORDER BY position";
+
+        Cursor cursor = db.rawQuery(
+                QUERY,
+                new String[]{account.getUuid().toString()}
+        );
+
+        ArrayList<Integer> positions = new ArrayList<>();
+        ArrayList<Integer> achievements = new ArrayList<>();
+
+        positions.add(0);
+        positions.add(1);
+        positions.add(2);
+
+        achievements.add(0);
+        achievements.add(0);
+        achievements.add(0);
+
+        while (cursor.moveToNext()) {
+            int position = cursor.getInt(cursor.getColumnIndexOrThrow("position"));
+            int count = cursor.getInt(cursor.getColumnIndexOrThrow("achievements"));
+
+            achievements.set(position, count);
+        }
+
+        cursor.close();
+
+        return achievements;
     }
 }

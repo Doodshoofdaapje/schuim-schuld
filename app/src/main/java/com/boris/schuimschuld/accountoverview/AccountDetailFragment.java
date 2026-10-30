@@ -123,6 +123,8 @@ public class AccountDetailFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> imageCropIntentHandler(result)
         );
+
+        setAchievements();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -269,5 +271,17 @@ public class AccountDetailFragment extends Fragment {
         binding.imageOutputAccountDetail.setImageURI(croppedImageUri);
         Bitmap pfp = ((BitmapDrawable) binding.imageOutputAccountDetail.getDrawable()).getBitmap();
         account.setPicture(getContext(), pfp);
+    }
+
+
+    private void setAchievements() {
+        ITransactionManager transactionManager = TransactionFactory.create(getContext());
+        ArrayList<Integer> achievements = transactionManager.getAccountAchievements(account);
+
+        ArrayList<Integer> counts = achievements;
+
+        binding.goldCrownCount.setText(String.valueOf(counts.get(0)));
+        binding.silverCrownCount.setText(String.valueOf(counts.get(1)));
+        binding.bronzeCrownCount.setText(String.valueOf(counts.get(2)));
     }
 }

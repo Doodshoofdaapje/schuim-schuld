@@ -10,7 +10,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.boris.schuimschuld.R;
 import com.boris.schuimschuld.account.Account;
+import com.boris.schuimschuld.dataservices.managers.ITransactionManager;
+import com.boris.schuimschuld.dataservices.managers.TransactionFactory;
 import com.boris.schuimschuld.util.PictureUtil;
+import com.boris.schuimschuld.util.Tuple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountCard extends ConstraintLayout {
 
